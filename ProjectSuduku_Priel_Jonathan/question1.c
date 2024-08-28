@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include "HeaderForEX1.h"
 
 // Function to print the Sudoku board
@@ -192,7 +189,7 @@ void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr)
         }
     }
 }
- 
+
 
 // Example usage
 void main()
@@ -224,5 +221,5 @@ void main()
 
     // Free memory for possibleDigits here...
 
-   
+
 }
