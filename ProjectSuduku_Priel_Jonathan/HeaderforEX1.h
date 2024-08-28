@@ -39,9 +39,9 @@ Array*** PossibleDigits(short sudokuBoard[][9]);
 
 void markNumbers(bool* numPresent, short arr[], int size);
 void findMissingNumbers(bool* numPresent, short** missingNumbers, int* missingCount);
-short* checkRowVal(short sudokuBoard[][SIZE], int row);
-short* checkColVal(short sudokuBoard[][SIZE], int col);
-short* checkCubeVal(short sudokuBoard[][SIZE], int row, int col);
+void checkRowVal(short sudokuBoard[][SIZE], int row, short* tempArr);
+void checkColVal(short sudokuBoard[][SIZE], int col, short* tempArr);
+void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr);
 
 
 

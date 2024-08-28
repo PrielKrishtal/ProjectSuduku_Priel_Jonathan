@@ -52,11 +52,10 @@ void printArray(short* arr, int size)
     }
     printf("]\n");
 }
-
 // Function to calculate possible digits for each cell
 Array*** PossibleDigits(short sudokuBoard[][SIZE])
 {
-    Array*** allPossibleVal = (Array***)malloc(SIZE * SIZE * sizeof(Array**));
+    Array*** allPossibleVal = (Array***)malloc(SIZE * sizeof(Array**));
     CHECK_ALLOCATION(allPossibleVal);
 
     for (int i = 0; i < SIZE; i++)
@@ -65,6 +64,10 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
         CHECK_ALLOCATION(allPossibleVal[i]);
     }
 
+    // Create a single temporary array to store row, column, or cube values
+    short* temp = (short*)malloc(sizeof(short) * SIZE);
+    CHECK_ALLOCATION(temp);
+
     for (int i = 0; i < SIZE; i++)
     {
         for (int j = 0; j < SIZE; j++)
@@ -72,22 +75,27 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
             if (sudokuBoard[i][j] == -1)
             {
                 bool numPresent[9] = { false };
-                short* tempRow = checkRowVal(sudokuBoard, i);
-                short* tempCol = checkColVal(sudokuBoard, j);
-                short* tempCube = checkCubeVal(sudokuBoard, i, j);
 
+                // Get row values and update numPresent
+                checkRowVal(sudokuBoard, i, temp);
                 printf("Checking cell (%d, %d)\n", i, j);
                 printf("Row values: ");
-                printArray(tempRow, SIZE);
+                printArray(temp, SIZE);
+                markNumbers(numPresent, temp, SIZE);
+
+                // Get column values and update numPresent
+                checkColVal(sudokuBoard, j, temp);
                 printf("Column values: ");
-                printArray(tempCol, SIZE);
+                printArray(temp, SIZE);
+                markNumbers(numPresent, temp, SIZE);
+
+                // Get cube values and update numPresent
+                checkCubeVal(sudokuBoard, i, j, temp);
                 printf("Cube values: ");
-                printArray(tempCube, 9);
+                printArray(temp, SIZE);
+                markNumbers(numPresent, temp, 9);
 
-                markNumbers(numPresent, tempRow, SIZE);
-                markNumbers(numPresent, tempCol, SIZE);
-                markNumbers(numPresent, tempCube, SIZE);
-
+                // Find missing numbers and store them
                 short* missingNumbers;
                 int missingCount;
                 findMissingNumbers(numPresent, &missingNumbers, &missingCount);
@@ -99,10 +107,6 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
                 CHECK_ALLOCATION(allPossibleVal[i][j]);
                 allPossibleVal[i][j]->arr = missingNumbers;
                 allPossibleVal[i][j]->size = missingCount;
-
-                free(tempRow);
-                free(tempCol);
-                free(tempCube);
             }
             else
             {
@@ -111,8 +115,12 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
         }
     }
 
+    // Free the temporary array after the loop
+    free(temp);
+
     return allPossibleVal;
 }
+
 
 
 // Function to mark numbers from the array
@@ -153,30 +161,22 @@ void findMissingNumbers(bool* numPresent, short** missingNumbers, int* missingCo
 }
 
 // Function to get row values
-short* checkRowVal(short sudokuBoard[][SIZE], int row)
+void checkRowVal(short sudokuBoard[][SIZE], int row, short* tempArr)
 {
-    short* tempArr = (short*)malloc(sizeof(short) * SIZE);
-    CHECK_ALLOCATION(tempArr);
     for (int i = 0; i < SIZE; i++)
         tempArr[i] = sudokuBoard[row][i];
-    return tempArr;
 }
 
-// Function to get column values
-short* checkColVal(short sudokuBoard[][SIZE], int col)
+// Function to get column values into temp array
+void checkColVal(short sudokuBoard[][SIZE], int col, short* tempArr)
 {
-    short* tempArr = (short*)malloc(sizeof(short) * SIZE);
-    CHECK_ALLOCATION(tempArr);
     for (int i = 0; i < SIZE; i++)
         tempArr[i] = sudokuBoard[i][col];
-    return tempArr;
 }
 
-// Function to get values in a specific 3x3 cube
-short* checkCubeVal(short sudokuBoard[][SIZE], int row, int col)
+// Function to get values in a specific 3x3 cube into temp array
+void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr)
 {
-    short* tempCubeArr = (short*)malloc(sizeof(short) * 9);
-    CHECK_ALLOCATION(tempCubeArr);
     int CubeNum = CalWhichCube(row, col);
     int row_offset = (CubeNum / 3) * 3;
     int col_offset = (CubeNum % 3) * 3;
@@ -186,14 +186,14 @@ short* checkCubeVal(short sudokuBoard[][SIZE], int row, int col)
     {
         for (int j = 0; j < 3; j++)
         {
-            tempCubeArr[CubeIndex++] = sudokuBoard[row_offset + i][col_offset + j];
+            tempArr[CubeIndex++] = sudokuBoard[row_offset + i][col_offset + j];
         }
     }
-    return tempCubeArr;
 }
+ 
 
 // Example usage
-int main()
+void main()
 {
     short sudokuBoard[9][9] =
 
@@ -222,5 +222,5 @@ int main()
 
     // Free memory for possibleDigits here...
 
-    return 0;
+   
 }
