@@ -10,6 +10,9 @@
 ///Macro for getting cube number  (1+ to match the cube numbers)
 #define CalWhichCube(row, col) (3 * (row / 3) + (col / 3) ) 
 
+#define ROW_OFFSET(cubeNum) ((CubeNum / 3) * 3);
+#define Col_OFFSET(cubeNum) ((CubeNum % 3) * 3);
+
 
 /// Macro for checking allocations
 #define CHECK_ALLOCATION(ptr) \

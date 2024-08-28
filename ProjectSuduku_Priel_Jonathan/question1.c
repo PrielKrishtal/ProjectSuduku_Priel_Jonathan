@@ -177,8 +177,8 @@ void checkColVal(short sudokuBoard[][SIZE], int col, short* tempArr)
 void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr)
 {
     int CubeNum = CalWhichCube(row, col);
-    int row_offset = (CubeNum / 3) * 3;
-    int col_offset = (CubeNum % 3) * 3;
+    int row_offset = ROW_OFFSET(CubeNum);
+    int col_offset = COL_OFFSET(CubeNum);
 
     int CubeIndex = 0;
     for (int i = 0; i < 3; i++)
