@@ -132,7 +132,6 @@
   <ItemGroup>
     <ClCompile Include="DebugMain.c" />
     <ClCompile Include="MainForEx1.c" />
-    <ClCompile Include="question1.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
