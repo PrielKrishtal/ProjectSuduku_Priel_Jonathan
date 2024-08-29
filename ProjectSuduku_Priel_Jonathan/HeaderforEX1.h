@@ -11,8 +11,12 @@
 #define CalWhichCube(row, col) (3 * (row / 3) + (col / 3) ) 
 
 #define ROW_OFFSET(cubeNum) ((CubeNum / 3) * 3);
-#define Col_OFFSET(cubeNum) ((CubeNum % 3) * 3);
+#define COL_OFFSET(cubeNum) ((CubeNum % 3) * 3);
 
+//Board status indices:
+#define NOT_FINISH 0
+#define FINISH_SUCCESS 1
+#define FINISH_FAILURE -1
 
 /// Macro for checking allocations
 #define CHECK_ALLOCATION(ptr) \
