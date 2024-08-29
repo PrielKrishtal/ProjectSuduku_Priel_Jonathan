@@ -51,5 +51,4 @@ void checkColVal(short sudokuBoard[][SIZE], int col, short* tempArr);
 void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr);
 
 
-int OneStage(short board[][9], Array*** possibilities, int* x, int* y);
-
+void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9]);

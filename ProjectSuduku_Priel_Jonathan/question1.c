@@ -191,7 +191,62 @@ void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr)
 }
 
 
-// Example usage
+// main for testing
+
+void main()
+{
+    short sudokuBoard[9][9] = {
+        { 5,-1, 4,-1, 7,-1,-1, 1,-1},
+        { 6,-1, 2, 1,-1,-1, 3,-1,-1},
+        { 1,-1, 8,-1, 4,-1,-1, 6,-1},
+        {-1, 5,-1,-1, 6,-1,-1, 2,-1},
+        {-1, 2,-1, 8,-1, 3,-1,-1,-1},
+        {-1,-1,-1,-1,-1, 4,-1, 5, 6},
+        {-1, 6, 1, 5, 3, 7, 2, 8, 4},
+        {-1, 8, 7,-1, 1, 9,-1, 3,-1},
+        {-1,-1,-1, 2, 8,-1,-1,-1, 9 }
+    };
+
+    printf("Initial Sudoku Board:\n");
+    printBoard(sudokuBoard); // Assumes printBoard function is defined to print the board state
+
+    Array*** possibleDigits = PossibleDigits(sudokuBoard); // Assumes PossibleDigits function initializes possibility arrays
+    printf("Initial possible digits for each cell:\n");
+    printPossibleDigits(possibleDigits); // Assumes printPossibleDigits function is defined
+
+    // Variables to hold coordinates of the last modified cell
+    int x = 0;
+    int y = 0;
+
+    // Call OneStage to process one solving step and print debug information
+    printf("Processing one stage...\n");
+    int status = OneStage(sudokuBoard, possibleDigits, &x, &y);
+
+    // Output results from the OneStage function
+    printf("After OneStage, status: %d\n", status);
+    printf("Last modified cell was at [%d, %d]\n", x, y);
+    printf("Updated Sudoku Board:\n");
+    printBoard(sudokuBoard);
+
+    // Optionally, print the updated possible digits
+    printf("Updated possible digits for each cell after OneStage:\n");
+    printPossibleDigits(possibleDigits);
+
+    // Free memory for possibleDigits
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (possibleDigits[i][j] != NULL) {
+                free(possibleDigits[i][j]->arr); // Free the array inside the structure
+                free(possibleDigits[i][j]); // Free the structure itself
+            }
+        }
+        free(possibleDigits[i]); // Free the row of pointers
+    }
+    free(possibleDigits); // Free the top-level pointer
+}
+
+
+/*
 void main()
 {
     short sudokuBoard[9][9] =
@@ -223,3 +278,4 @@ void main()
 
 
 }
+*/

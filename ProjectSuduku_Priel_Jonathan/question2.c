@@ -25,48 +25,122 @@ void checkAndRemoveVal(Array* arr, int valToCheck)
 
 
 // Function to update possible values for Sudoku cells after placing a number on the board
-void updatePossibilities(Array*** pos, int* row, int* col, int* value)
+void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9])
 {
 	for (int i = 0; i < SIZE; i++)
 	{
 		if (pos[*row][i] != NULL)
 		{
 			// Remove the placed value from the possibilities of the cell 
-			checkAndRemoveVal(pos[*row][i]->arr, pos[*row][i]->size, value);
+			checkAndRemoveVal(pos[*row][i], value);
+			
 		}
 
 		if (pos[i][*col] != NULL)
 		{
 			// Remove the placed value from the possibilities of the cell 
-			checkAndRemoveVal(pos[i][*col]->arr, pos[i][*col]->size, value);
+			checkAndRemoveVal(pos[i][*col], value);
 		}
 
-		 // Calculate the starting indices of the 3x3 cube that contains the cell
-		int CubeNum = CalWhichCube(*row, *col);
-		int row_offset = ROW_OFFSET(CubeNum);
-		int col_offset = COL_OFFSET(CubeNum);
+		 
+	}
+	
 
-		for (int m = 0; m < SIZE; m++) {
-			for (int j = 0; j < SIZE; j++) {
+	for (int m = 0; m < 3; m++) {
+		for (int j = 0; j < 3; j++) {
 
-				if(pos[row_offset + m][col_offset + j]!=NULL) // check cube values and remove
+			// Calculate the starting indices of the 3x3 cube that contains the cell
+			int CubeNum = CalWhichCube(*row, *col);
+			int row_offset = ROW_OFFSET(CubeNum);
+			int col_offset = COL_OFFSET(CubeNum);
+
+
+			printf("Processing Cube #%d with starting indices at [%d, %d]\n", CubeNum, row_offset, col_offset);
+
+			int currentRow = row_offset + m;
+			int currentCol = col_offset + j;
+
+
+			// Ensure indices are within the valid range
+			if (currentRow >= 0 && currentRow < SIZE && currentCol >= 0 && currentCol < SIZE)
+			{
+				printf("Checking board[%d][%d] = %d\n", currentRow, currentCol, board[currentRow][currentCol]);
+				if (pos[currentRow][currentCol] != NULL) // check cube values and remove
 				{
-					checkAndRemoveVal(pos[row_offset + m][col_offset + j]->arr, pos[row_offset + m][col_offset + j]->size, value);
+					checkAndRemoveVal(pos[currentRow][currentCol], value);
 				}
 			}
+
+			else
+				printf("out of bounds error");
 		}
 	}
+
+
 }
 
 //Helper function that frees the Array struct
 void freePos(Array* array) 
 {
-	if (array != NULL) {
-		free(array->arr);  // Free the dynamically allocated memory for the array
-		array->arr = NULL; // Set the pointer to NULL to avoid dangling pointer
-		array->size = 0;   // Reset size to 0
+	if (array) {
+		free(array->arr); // Safely free the array
+		array->arr = NULL;
+		array->size = 0;
 	}
 }
+
+
+bool checkBoardValidity(short board[][9])
+{
+	bool used[10]; // Array to track numbers 1-9 (index 0 is unused)
+
+	// Check each row for duplicates
+	for (int i = 0; i < SIZE; i++) {
+		memset(used, 0, sizeof(used)); // Reset the tracking array for each new row
+		for (int j = 0; j < SIZE; j++) {
+			if (board[i][j] != -1) { // Check if the cell is filled
+				if (used[board[i][j]]) {
+					return false; // Return false if the number has already been used in the row
+				}
+				used[board[i][j]] = true; // Mark the number as used in this row
+			}
+		}
+	}
+
+	// Check each column for duplicates
+	for (int j = 0; j < SIZE; j++) {
+		memset(used, 0, sizeof(used)); // Reset the tracking array for each new column
+		for (int i = 0; i < SIZE; i++) {
+			if (board[i][j] != -1) { // Check if the cell is filled
+				if (used[board[i][j]]) {
+					return false; // Return false if the number has already been used in the column
+				}
+				used[board[i][j]] = true; // Mark the number as used in this column
+			}
+		}
+	}
+
+	// Check each 3x3 subgrid for duplicates
+	for (int block = 0; block < SIZE; block++) {
+		memset(used, 0, sizeof(used)); // Reset the tracking array for each new block
+		int startRow = (block / 3) * 3; // Calculate the starting row index for the current block
+		int startCol = (block % 3) * 3; // Calculate the starting column index for the current block
+
+		for (int i = startRow; i < startRow + 3; i++) {
+			for (int j = startCol; j < startCol + 3; j++) {
+				if (board[i][j] != -1) { // Check if the cell is filled
+					if (used[board[i][j]]) {
+						return false; // Return false if the number has already been used in this 3x3 subgrid
+					}
+					used[board[i][j]] = true; // Mark the number as used in this 3x3 subgrid
+				}
+			}
+		}
+	}
+
+	return true; // Return true if no duplicates are found, indicating the board is valid
+}
+
 
 
 int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
@@ -77,13 +151,13 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 	for (int i = 0; i < SIZE; i++) {
 		for (int j = 0; j < SIZE; j++) {
 
-			if (board[i][j] != -1)
+			if (board[i][j] == -1 && possibilities[i][j] != NULL)
 			{
 				if (possibilities[i][j]->size == 1) //check if the current position only has a single option
 				{
 					board[i][j] = possibilities[i][j]->arr[0]; // Corrected to assign the single possible value; //update the suduko board with the singel value
+					updatePossibilities(possibilities, x, y, board[i][j],board); // call the helper funtion to update the possibel values matrix
 					freePos(possibilities[i][j]);
-					updatePossibilities(possibilities, x, y, board[i][j]); // call the helper funtion to update the possibel values matrix
 				}
 
 				else
@@ -93,18 +167,21 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 					{
 						// #Note: incase of sevral minimal size values we take the first appearing
 						minPosSize = possibilities[i][j]->size;
-						tempX = i;
-						tempY = j;
+						*x = i; //updating the X coordinate pointer
+						*y = j; //updating the Y coordinate pointer
 					}
 				}
 			}
 
 		}
 	}
-	*x = tempX; //updating the X coordinate pointer
-	*y = tempY; //updating the Y coordinate pointer
 
-	switch (boardStatus) {
+	if (!checkBoardValidity(board)) {
+		boardStatus = FINISH_FAILURE;
+	}
+
+	switch (boardStatus) 
+	{
 	case NOT_FINISH:
 		printf("NOT_FINISH");
 		return NOT_FINISH;
@@ -114,7 +191,10 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 		return FINISH_SUCCESS;
 
 	case FINISH_FAILURE:
-		break; //todo
+		printf("FINISH_FAILURE");
+		return FINISH_FAILURE;
 	}
 
 }
+
+
