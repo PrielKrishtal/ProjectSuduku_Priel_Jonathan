@@ -27,12 +27,14 @@ void checkAndRemoveVal(Array* arr, int valToCheck)
 // Function to update possible values for Sudoku cells after placing a number on the board
 void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9])
 {
-	printf("\nUpdating possibilities for value %d at [%d][%d]\n", value, *row, *col);
+	printf("\nStarting to update possibilities due to placing of the value %d at position [%d, %d].\n", value, *row, *col);
+
 	for (int i = 0; i < SIZE; i++)
 	{
 		if (pos[*row][i] != NULL)
 		{
 			// Remove the placed value from the possibilities of the cell 
+			printf("Removing %d from possibilities at row [%d][%d].\n", value, *row, i);
 			checkAndRemoveVal(pos[*row][i], value);
 			
 		}
@@ -40,6 +42,7 @@ void updatePossibilities(Array*** pos, int* row, int* col, int value, short boar
 		if (pos[i][*col] != NULL)
 		{
 			// Remove the placed value from the possibilities of the cell 
+			printf("Removing %d from possibilities at column [%d][%d].\n", value, i, *col);
 			checkAndRemoveVal(pos[i][*col], value);
 		}
 
@@ -61,7 +64,7 @@ void updatePossibilities(Array*** pos, int* row, int* col, int value, short boar
 			
 			if (currentRow < SIZE && currentCol < SIZE) {
 				if (pos[currentRow][currentCol] != NULL) {
-					printf("Removing value at subgrid [%d][%d], value: %d\n", currentRow, currentCol, board[currentRow][currentCol]);
+					printf("Removing value at subgrid [%d][%d], value removed: %d\n", currentRow, currentCol, board[currentRow][currentCol]);
 					checkAndRemoveVal(pos[currentRow][currentCol], value);
 				}
 			}
@@ -137,6 +140,22 @@ bool checkBoardValidity(short board[][9])
 
 	return true; // Return true if no duplicates are found, indicating the board is valid
 }
+
+
+
+/* 
+    ideas for improvment of the code : 
+	1. take the part of //check if the current position only has a single option and most of the stuff
+	   in the double for loops to update possibilites and tranfer tje status check also.
+
+
+	2. in update possiblities split the cube check to a helper function
+
+
+*/
+
+
+
 
 
 

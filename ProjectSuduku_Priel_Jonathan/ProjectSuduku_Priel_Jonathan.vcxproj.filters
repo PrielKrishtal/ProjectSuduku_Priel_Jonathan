@@ -24,6 +24,12 @@
     <ClCompile Include="DebugMain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="question2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HeaderforEX1.h">
