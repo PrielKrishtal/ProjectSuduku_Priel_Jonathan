@@ -229,17 +229,20 @@ void main() {
     printf("Question 2: Processing one stage...\n");
     printf(" __________________________\n");
     
-    int status = OneStage(sudokuBoard, possibleDigits, &x, &y);
+    int status = OneStage(sudokuBoard, possibleDigits, &x, &y);//prints status and gives numeric info of status
+    printf("\n");
 
     // Output results from the OneStage function
-    printf("After OneStage, status: %d\n", status);
-    printf("Last modified cell was at [%d, %d]\n", x, y);
+    printf("After OneStage, status: %d \n\n", status);
+    printf("Cell with minimal posibilites is: [%d, %d]\n", x, y);
+    printf(" ___________________________________________\n");
     printf("Updated Sudoku Board:\n");
     printBoard(sudokuBoard);
 
+    /*
     // Optionally, print the updated possible digits
     printf("Updated possible digits for each cell after OneStage:\n");
-    printPossibleDigits(possibleDigits);
+    printPossibleDigits(possibleDigits);*/
 
     // Free memory for possibleDigits
     for (int i = 0; i < SIZE; i++) {

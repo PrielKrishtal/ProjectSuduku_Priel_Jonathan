@@ -27,6 +27,7 @@ void checkAndRemoveVal(Array* arr, int valToCheck)
 // Function to update possible values for Sudoku cells after placing a number on the board
 void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9])
 {
+	printf("\nUpdating possibilities for value %d at [%d][%d]\n", value, *row, *col);
 	for (int i = 0; i < SIZE; i++)
 	{
 		if (pos[*row][i] != NULL)
@@ -58,15 +59,18 @@ void updatePossibilities(Array*** pos, int* row, int* col, int value, short boar
 
 
 			
-			if (pos[currentRow][currentCol] != NULL) { // Check cube values and remove
-				printf("Currently at Cube number: #%d Checking board[%d][%d] = %d\n", CubeNum, currentRow, currentCol, board[currentRow][currentCol]);
-				checkAndRemoveVal(pos[currentRow][currentCol], value);
+			if (currentRow < SIZE && currentCol < SIZE) {
+				if (pos[currentRow][currentCol] != NULL) {
+					printf("Removing value at subgrid [%d][%d], value: %d\n", currentRow, currentCol, board[currentRow][currentCol]);
+					checkAndRemoveVal(pos[currentRow][currentCol], value);
+				}
 			}
-			
 
-			else
-				printf("ERROR AT INDEX [%d][%d] : out of bounds error\n", currentRow, currentCol);
+			else {
+				printf("ERROR: Attempted out of bounds access at [%d][%d]\n", currentRow, currentCol);
+			}
 		}
+		printf("\n");
 	}
 
 
