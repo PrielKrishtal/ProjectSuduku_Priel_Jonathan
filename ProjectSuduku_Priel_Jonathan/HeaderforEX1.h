@@ -10,8 +10,8 @@
 ///Macro for getting cube number  (1+ to match the cube numbers)
 #define CalWhichCube(row, col) (3 * (row / 3) + (col / 3) ) 
 
-#define ROW_OFFSET(cubeNum) ((CubeNum / 3) * 3);
-#define COL_OFFSET(cubeNum) ((CubeNum % 3) * 3);
+#define ROW_OFFSET(cubeNum) ((CubeNum / 3) * 3)
+#define COL_OFFSET(cubeNum) ((CubeNum % 3) * 3)
 
 //Board status indices:
 #define NOT_FINISH 0

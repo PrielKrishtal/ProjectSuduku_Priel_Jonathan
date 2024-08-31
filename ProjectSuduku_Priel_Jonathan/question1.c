@@ -71,13 +71,15 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
     {
         for (int j = 0; j < SIZE; j++)
         {
+            printf("\n");
             if (sudokuBoard[i][j] == -1)
             {
                 bool numPresent[9] = { false };
 
                 // Get row values and update numPresent
                 checkRowVal(sudokuBoard, i, temp);
-                printf("Checking cell (%d, %d)\n", i, j);
+                printf("Checking cell (%d, %d):\n", i, j);
+                printf("__________________________\n");
                 printf("Row values: ");
                 printArray(temp, SIZE);
                 markNumbers(numPresent, temp, SIZE);
@@ -88,11 +90,13 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
                 printArray(temp, SIZE);
                 markNumbers(numPresent, temp, SIZE);
 
+
                 // Get cube values and update numPresent
                 checkCubeVal(sudokuBoard, i, j, temp);
                 printf("Cube values: ");
                 printArray(temp, SIZE);
                 markNumbers(numPresent, temp, 9);
+ 
 
                 // Find missing numbers and store them
                 short* missingNumbers;
@@ -101,6 +105,7 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
 
                 printf("Possible digits for cell (%d, %d): ", i, j);
                 printArray(missingNumbers, missingCount);
+                
 
                 allPossibleVal[i][j] = (Array*)malloc(sizeof(Array));
                 CHECK_ALLOCATION(allPossibleVal[i][j]);
@@ -193,8 +198,7 @@ void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr)
 
 // main for testing
 
-void main()
-{
+void main() {
     short sudokuBoard[9][9] = {
         { 5,-1, 4,-1, 7,-1,-1, 1,-1},
         { 6,-1, 2, 1,-1,-1, 3,-1,-1},
@@ -209,17 +213,22 @@ void main()
 
     printf("Initial Sudoku Board:\n");
     printBoard(sudokuBoard); // Assumes printBoard function is defined to print the board state
+    printf("\n");
+    printf("\n");
 
-    Array*** possibleDigits = PossibleDigits(sudokuBoard); // Assumes PossibleDigits function initializes possibility arrays
+    Array*** possibleDigits = PossibleDigits(sudokuBoard); // Initialize possible digits array
+    printf("\n");
     printf("Initial possible digits for each cell:\n");
-    printPossibleDigits(possibleDigits); // Assumes printPossibleDigits function is defined
+    printPossibleDigits(possibleDigits); // Print initial possibilities
 
-    // Variables to hold coordinates of the last modified cell
-    int x = 0;
-    int y = 0;
+    int x = 0, y = 0; // Variables to hold coordinates of the last modified cell
 
     // Call OneStage to process one solving step and print debug information
-    printf("Processing one stage...\n");
+
+    printf("\n");
+    printf("Question 2: Processing one stage...\n");
+    printf(" __________________________\n");
+    
     int status = OneStage(sudokuBoard, possibleDigits, &x, &y);
 
     // Output results from the OneStage function

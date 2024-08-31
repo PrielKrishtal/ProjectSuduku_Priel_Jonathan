@@ -45,34 +45,27 @@ void updatePossibilities(Array*** pos, int* row, int* col, int value, short boar
 		 
 	}
 	
+	printf("\n");
+	int CubeNum = CalWhichCube(*row, *col);
+	int row_offset = ROW_OFFSET(CubeNum);
+	int col_offset = COL_OFFSET(CubeNum);
 
 	for (int m = 0; m < 3; m++) {
 		for (int j = 0; j < 3; j++) {
-
-			// Calculate the starting indices of the 3x3 cube that contains the cell
-			int CubeNum = CalWhichCube(*row, *col);
-			int row_offset = ROW_OFFSET(CubeNum);
-			int col_offset = COL_OFFSET(CubeNum);
-
-
-			printf("Processing Cube #%d with starting indices at [%d, %d]\n", CubeNum, row_offset, col_offset);
 
 			int currentRow = row_offset + m;
 			int currentCol = col_offset + j;
 
 
-			// Ensure indices are within the valid range
-			if (currentRow >= 0 && currentRow < SIZE && currentCol >= 0 && currentCol < SIZE)
-			{
-				printf("Checking board[%d][%d] = %d\n", currentRow, currentCol, board[currentRow][currentCol]);
-				if (pos[currentRow][currentCol] != NULL) // check cube values and remove
-				{
-					checkAndRemoveVal(pos[currentRow][currentCol], value);
-				}
+			
+			if (pos[currentRow][currentCol] != NULL) { // Check cube values and remove
+				printf("Currently at Cube number: #%d Checking board[%d][%d] = %d\n", CubeNum, currentRow, currentCol, board[currentRow][currentCol]);
+				checkAndRemoveVal(pos[currentRow][currentCol], value);
 			}
+			
 
 			else
-				printf("out of bounds error");
+				printf("ERROR AT INDEX [%d][%d] : out of bounds error\n", currentRow, currentCol);
 		}
 	}
 
@@ -156,7 +149,7 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 				if (possibilities[i][j]->size == 1) //check if the current position only has a single option
 				{
 					board[i][j] = possibilities[i][j]->arr[0]; // Corrected to assign the single possible value; //update the suduko board with the singel value
-					updatePossibilities(possibilities, x, y, board[i][j],board); // call the helper funtion to update the possibel values matrix
+					updatePossibilities(possibilities, &i, &j, board[i][j],board); // call the helper funtion to update the possibel values matrix
 					freePos(possibilities[i][j]);
 				}
 
@@ -176,6 +169,7 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 		}
 	}
 
+	// Check board validity and determine if the board is solved or failed
 	if (!checkBoardValidity(board)) {
 		boardStatus = FINISH_FAILURE;
 	}
@@ -184,15 +178,15 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 	{
 	case NOT_FINISH:
 		printf("NOT_FINISH");
-		return NOT_FINISH;
+		return boardStatus;
 		
 	case FINISH_SUCCESS:
 		printf("FINISH_SUCCESS");
-		return FINISH_SUCCESS;
+		return boardStatus;
 
 	case FINISH_FAILURE:
 		printf("FINISH_FAILURE");
-		return FINISH_FAILURE;
+		return boardStatus;
 	}
 
 }
