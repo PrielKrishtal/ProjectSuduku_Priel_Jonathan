@@ -1,56 +1,56 @@
 #include "HeaderForEX1.h"
 
 // Function to remove a specific value from an array of possible values in a Sudoku cell
-void checkAndRemoveVal(Array* arr, int valToCheck) 
+void checkAndRemoveVal(Array* arr, int valToCheck)
 {
-	int indexToRemove = -1; 
+	if (arr->size <= 0 ) {
+		freePos(arr);
+		arr = NULL;
+		return;
+	}
 
-	
+
 	for (int i = 0; i < arr->size; i++) {
 		if (arr->arr[i] == valToCheck) { // Check if the current element is the value to remove
-			indexToRemove = i; // Store the index of the value to be removed
-			break; // Exit the loop as the value is found
+			// Shift elements left from the current position
+			for (int j = i; j < arr->size - 1; j++) {
+				arr->arr[j] = arr->arr[j + 1];
+			}
+			arr->size--; // Decrease the size of the array by 1 since an element has been removed
+			break; // Exit the loop as the value has been removed
 		}
 	}
 
-	// If a value was found and its index is identified
-	if (indexToRemove != -1) {
-		// Shift elements to the left to fill the gap created by the removed element
-		for (int i = indexToRemove; i < arr->size - 1; i++) {
-			arr->arr[i] = arr->arr[i + 1]; // Copy the next element to the current position
-		}
-		arr->size--; // Decrease the size of the array by 1 since an element has been removed
-	}
 }
 
 
 // Function to update possible values for Sudoku cells after placing a number on the board
-void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9])
+void updatePossibilities(Array*** pos, int row, int col, int value, short board[][9])
 {
-	printf("\nStarting to update possibilities due to placing of the value %d at position [%d, %d].\n", value, *row, *col);
+	printf("\nStarting to update possibilities due to placing of the value %d at position [%d, %d].\n", value, row, col);
 
 	for (int i = 0; i < SIZE; i++)
 	{
-		if (pos[*row][i] != NULL)
+		if (pos[row][i] != NULL)
 		{
 			// Remove the placed value from the possibilities of the cell 
-			printf("Removing %d from possibilities at row [%d][%d].\n", value, *row, i);
-			checkAndRemoveVal(pos[*row][i], value);
+			printf("Removing %d from possibilities at row [%d][%d].\n", value, row, i);
+			checkAndRemoveVal(pos[row][i], value);
 			
 		}
 
-		if (pos[i][*col] != NULL)
+		if (pos[i][col] != NULL)
 		{
 			// Remove the placed value from the possibilities of the cell 
-			printf("Removing %d from possibilities at column [%d][%d].\n", value, i, *col);
-			checkAndRemoveVal(pos[i][*col], value);
+			printf("Removing %d from possibilities at column [%d][%d].\n", value, i, col);
+			checkAndRemoveVal(pos[i][col], value);
 		}
 
 		 
 	}
 	
 	printf("\n");
-	int CubeNum = CalWhichCube(*row, *col);
+	int CubeNum = CalWhichCube(row, col);
 	int row_offset = ROW_OFFSET(CubeNum);
 	int col_offset = COL_OFFSET(CubeNum);
 
@@ -172,7 +172,7 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 				if (possibilities[i][j]->size == 1) //check if the current position only has a single option
 				{
 					board[i][j] = possibilities[i][j]->arr[0];//update the suduko board with the singel value
-					updatePossibilities(possibilities, &i, &j, board[i][j],board); // call the helper funtion to update the possibel values matrix
+					updatePossibilities(possibilities, i, j, board[i][j],board); // call the helper funtion to update the possibel values matrix
 					freePos(possibilities[i][j]);
 					possibilities[i][j] = NULL;
 

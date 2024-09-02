@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -6,7 +7,7 @@
 
 
 #define SIZE 9
-
+#define MAX_NAME_LENGTH 100
 ///Macro for getting cube number  (1+ to match the cube numbers)
 #define CalWhichCube(row, col) (3 * (row / 3) + (col / 3) ) 
 
@@ -26,6 +27,35 @@
             exit(EXIT_FAILURE); \
         } \
     } while (0)
+
+
+// Struct to represent a position on the board
+typedef struct Node {
+    int row;
+    int col;
+    struct Node* next;
+} Node;
+
+// Struct to represent a player
+typedef struct Player {
+    char name[MAX_NAME_LENGTH];
+    int board[SIZE][SIZE];  // Example board representation
+    int possibleDigits[SIZE];  // Example possible digits
+    struct Player* next;  // Pointer for linked list
+} Player;
+
+// Struct to represent a player node in a linked list
+typedef struct PlayerNode {
+    Player* player;
+    struct PlayerNode* next;
+} PlayerNode;
+
+// Struct to represent a player node in a binary search tree
+typedef struct PlayerTreeNode {
+    Player* player;
+    struct PlayerTreeNode* left;
+    struct PlayerTreeNode* right;
+} PlayerTreeNode;
 
 
 
