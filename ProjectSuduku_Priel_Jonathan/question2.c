@@ -163,7 +163,7 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 {
 	int boardStatus = FINISH_SUCCESS;
 	int minPosSize = SIZE+1;//initializing as max value of size
-	int tempX = 0, tempY = 0; //temp variables to hold coordinates
+	
 	for (int i = 0; i < SIZE; i++) {
 		for (int j = 0; j < SIZE; j++) {
 
@@ -171,9 +171,11 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 			{
 				if (possibilities[i][j]->size == 1) //check if the current position only has a single option
 				{
-					board[i][j] = possibilities[i][j]->arr[0]; // Corrected to assign the single possible value; //update the suduko board with the singel value
+					board[i][j] = possibilities[i][j]->arr[0];//update the suduko board with the singel value
 					updatePossibilities(possibilities, &i, &j, board[i][j],board); // call the helper funtion to update the possibel values matrix
 					freePos(possibilities[i][j]);
+					possibilities[i][j] = NULL;
+
 				}
 
 				else
@@ -193,11 +195,14 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 	}
 
 	// Check board validity and determine if the board is solved or failed
-	if (!checkBoardValidity(board)) {
-		boardStatus = FINISH_FAILURE;
+	if (boardStatus != FINISH_FAILURE)
+	{
+		if (!checkBoardValidity(board))
+			boardStatus = FINISH_FAILURE;
 	}
+	
 
-	switch (boardStatus) 
+	switch (boardStatus)
 	{
 	case NOT_FINISH:
 		printf("NOT_FINISH");

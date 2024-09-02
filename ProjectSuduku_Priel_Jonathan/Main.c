@@ -44,10 +44,15 @@ void main() {
     printf("Updated Sudoku Board:\n");
     printBoard(sudokuBoard);
 
-    /*
+    printf("***********************************************************************************************\n\n\n");
+    printf("CHEKING VALUES AFTER QUESTION 2:\n");
     // Optionally, print the updated possible digits
     printf("Updated possible digits for each cell after OneStage:\n");
-    printPossibleDigits(possibleDigits);*/
+    possibleDigits = PossibleDigits(sudokuBoard); // Initialize possible digits array
+    printf("\n");
+    printf("Initial possible digits for each cell:\n");
+    printPossibleDigits(possibleDigits); // Print initial possibilities
+
 
     // Free memory for possibleDigits
     for (int i = 0; i < SIZE; i++) {

@@ -49,6 +49,9 @@ void findMissingNumbers(bool* numPresent, short** missingNumbers, int* missingCo
 void checkRowVal(short sudokuBoard[][SIZE], int row, short* tempArr);
 void checkColVal(short sudokuBoard[][SIZE], int col, short* tempArr);
 void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr);
-
-
+void checkAndRemoveVal(Array* arr, int valToCheck);
+void freePos(Array* array);
+bool checkBoardValidity(short board[][9]);
 void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9]);
+int OneStage(short board[][9], Array*** possibilities, int* x, int* y);
+int FillBoard(short board[][9], Array*** possibilities);
