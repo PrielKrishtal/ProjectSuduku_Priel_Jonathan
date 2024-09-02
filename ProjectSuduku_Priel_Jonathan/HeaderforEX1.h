@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <time.h>
 
 #define SIZE 9
 #define MAX_NAME_LENGTH 100
@@ -85,3 +85,20 @@ bool checkBoardValidity(short board[][9]);
 void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9]);
 int OneStage(short board[][9], Array*** possibilities, int* x, int* y);
 int FillBoard(short board[][9], Array*** possibilities);
+
+
+
+// Function prototypes
+Node* createLocationList();
+int randomInt(int min, int max);
+Node* deleteNode(Node* head, int index);
+Node* selectRandomLocation(Node* head, int size, int* row, int* col);
+int randomLegalValue(int possibleValues[], int count);
+Player* createPlayer(const char* name);
+void addPlayerToList(PlayerNode** head, Player* player);
+void addPlayerToArray(Player* player, Player* array[], int* count);
+PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player);
+void freeList(Node* head);
+void freePlayerList(PlayerNode* head);
+void freePlayerTree(PlayerTreeNode* root);
+void freePlayers(Player* head);
