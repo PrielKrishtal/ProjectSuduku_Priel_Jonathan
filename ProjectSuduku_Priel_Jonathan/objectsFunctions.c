@@ -60,7 +60,7 @@ void createRandomBoard(int board[SIZE][SIZE]) {
 
 
 
-
+//Funcion that creates a PlayersList and Fills it in using given info from the user
 PlayersList create_And_Fill_ActivePlayersList(int numPlayers)
 {
     PlayersList lst; // Declare the players list
@@ -157,9 +157,9 @@ Player** resizeArray(Player** players, int* currentSize)
 void main() {
     srand(time(NULL));
     // Create the linked lists, array, and tree
-    PlayerNode* winnerList = NULL;
-    PlayerNode* activePlayerList = NULL;
-    PlayerTreeNode* playerTree = NULL;
+    PlayersList winnerList; 
+    PlayersList activePlayerList; 
+    PlayersTree tree_Of_Players;
     Player* activePlayersArray[SIZE * SIZE];
     int activePlayersCount = 0;
     getNumActivePlayers(&activePlayersCount); //getting number of active players from user
@@ -173,20 +173,23 @@ void main() {
     playerPointersArray = resizeArray(playerPointersArray, &activePlayersCount); // Resize the array directly
     
     
-    PlayerTreeNode* playersTree = buildTreeFromArray(&playerPointersArray,0,&activePlayersCount);
+    tree_Of_Players.root = buildTreeFromArray(&playerPointersArray,0,&activePlayersCount); //using build treeFromArray as setting it as our's tree's root
 
 
-    // Create a linked list of all possible locations
-    Node* locationList = createLocationList();
-    int size = SIZE * SIZE;  // 81 cells on the board
+    if (activePlayersCount > 0) //if we have at least 1 active player
+    {
+        inOrderProcess(tree_Of_Players.root, &activePlayerList, &winnerList);
+        void printBoardToFile(FILE * file, int board[SIZE][SIZE]); // need to handle diffrently as if i get file(?)
+        printWinnersToFile(&winnerList, const char* filename);
+        
+    }
+    
 
    
 
     // Free allocated memory
-    freeList(locationList);
-    freePlayerList(activePlayerList);
-    freePlayerTree(playerTree);
-    freePlayers(player1); // Freeing all players, assuming no further references
+    
+    
 
     
 }
@@ -275,16 +278,6 @@ Player* createPlayer(const char* name) {
     return newPlayer;
 }
 
-
-
-// Function to add a player to an array
-/*void addPlayerToArray(Player* player, Player* array[], int* count) {
-    if (*count < SIZE * SIZE) {
-        array[*count] = player;
-        (*count)++;
-    }
-}*/
-
 // Function to insert a player into a binary search tree
 PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player) {
     if (root == NULL) {
@@ -341,7 +334,7 @@ void freePlayers(Player* head) {
 
 
 
-///Traversal by order
+//Traversal by order
 void inOrderTraversal(PlayerTreeNode* root, void (*func)(Player*))
 {
     if (root != NULL)
@@ -354,8 +347,7 @@ void inOrderTraversal(PlayerTreeNode* root, void (*func)(Player*))
 
 
 
-///Code for build tree from array :
-
+//Code for build tree from array :
 PlayerTreeNode* buildTreeFromArray(Player* array[], int start, int end) {
     if (start > end) return NULL;
 
@@ -375,8 +367,7 @@ PlayerTreeNode* buildTreeFromArray(Player* array[], int start, int end) {
 
 
 
-////code for sort players :
-
+//Function that does the sorts the pointers of the PlayerNode's in ActivePlayers
 void bubbleSort(Player** players, int count) {
     for (int i = 0; i < count - 1; i++) {
         for (int j = 0; j < count - i - 1; j++) {
@@ -395,10 +386,9 @@ void bubbleSort(Player** players, int count) {
 
 
 
-////code for create new player :
-
-
-Player* createPlayer(const char* name) {
+//code for create new player :
+Player* createPlayer(const char* name)
+{
     Player* newPlayer = (Player*)malloc(sizeof(Player));
     if (!newPlayer) {
         fprintf(stderr, "Memory allocation failed\n");
@@ -413,6 +403,165 @@ Player* createPlayer(const char* name) {
 }
 
 
+// Function to perform in-order traversal and process each player
+void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers)
+{
+    if (root == NULL)
+        return;
+
+    // Traverse left subtree
+    inOrderProcess(root->left, activePlayers, winnerPlayers);
+
+    // Process current player
+    if (root->player != NULL) 
+    {
+        int x = 0, y = 0; // Coordinates for the cell with minimal possibilities
+        int status = OneStage(root->player->board, root->player->possibleDigits, &x, &y);
+
+        if (status == FINISH_FAILURE) {
+            printf("%s has finished with failure and is out of the game.\n", root->player->name);
+            removePlayerFromList(activePlayers, root->player);  // Remove player from active list
+            root->player = NULL;  // Set player pointer to NULL in the tree
+        }
+        else if (status == FINISH_SUCCESS) {
+            printf("%s has finished successfully and is moved to the winner's list.\n", root->player->name);
+            movePlayerToWinnersList(activePlayers, winnerPlayers, root->player); // Move player to winners list
+            root->player = NULL;  // Set player pointer to NULL in the tree
+        }
+        else if (status == NOT_FINISH) {
+            // Allow player to choose an option for the cell with minimal possibilities
+            fillCellWithInput(root->player->board, root->player->possibleDigits, x, y);
+        }
+    }
+
+    // Traverse right subtree
+    inOrderProcess(root->right, activePlayers, winnerPlayers);
+}
+
+// Function to print each player's board
+// Function to print the Sudoku board to a file
+void printBoardToFile(FILE* file, int board[SIZE][SIZE])
+{
+    if (!file) 
+    {
+        fprintf(stderr, "Invalid file pointer.\n");
+        return;
+    }
+
+    // Print the header for columns
+    fprintf(file, "   ");
+    for (int col = 0; col < SIZE; col++)
+    {
+        fprintf(file, "%d ", col);
+        if (col == 2 || col == 5) {
+            fprintf(file, "| ");
+        }
+    }
+    fprintf(file, "\n");
+
+    // Print the top border
+    fprintf(file, "  ");
+    for (int col = 0; col < SIZE * 2 + 3; col++) 
+    {
+        fprintf(file, "-");
+    }
+    fprintf(file, "\n");
+
+    // Print each row of the board
+    for (int row = 0; row < SIZE; row++) {
+        // Print the row index
+        fprintf(file, "%d |", row);
+
+        // Print each cell in the row
+        for (int col = 0; col < SIZE; col++) {
+            fprintf(file, "%d ", board[row][col]);
+            if (col == 2 || col == 5) {
+                fprintf(file, "| "); // Vertical separator for 3x3 subgrids
+            }
+        }
+
+        // Print a new line after each row
+        fprintf(file, "\n");
+
+        // Print horizontal separators after each 3x3 subgrid
+        if (row == 2 || row == 5) {
+            fprintf(file, "  ");
+            for (int col = 0; col < SIZE * 2 + 3; col++) {
+                fprintf(file, "-");
+            }
+            fprintf(file, "\n");
+        }
+    }
+}
+
+// Function to print the list of winners and their boards to a text file
+void printWinnersToFile(PlayerNode* winnerList, const char* filename)
+{
+    FILE* file = fopen(filename, "w");  // Open the file for writing
+    if (file == NULL) {
+        fprintf(stderr, "Error opening file for writing\n");
+        return;
+    }
+
+    // Iterate through the list of winners
+    PlayerNode* current = winnerList;
+    while (current != NULL) {
+        // Print each winner's name and their board
+        fprintf(file, "Winner: %s\n", current->player->name);
+        fprintf(file, "Board:\n");
+        printBoardToFile(file, current->player->board);  // Print the board
+        fprintf(file, "\n");  // Add a newline for separation between entries
+        current = current->next;
+    }
+
+    fclose(file);  // Close the file
+}
 
 
+//helper function to view suduko board printed as needed
+/*
+void printSudoku(int board[SIZE][SIZE]) {
+    // Print the header for columns
+    printf("   ");
+    for (int col = 0; col < SIZE; col++) {
+        printf("%d ", col);
+        if (col == 2 || col == 5) {
+            printf("| ");
+        }
+    }
+    printf("\n");
 
+    // Print the top border
+    printf("  ");
+    for (int col = 0; col < SIZE * 2 + 3; col++) {
+        printf("-");
+    }
+    printf("\n");
+
+    // Print each row of the board
+    for (int row = 0; row < SIZE; row++) {
+        // Print the row index
+        printf("%d |", row);
+
+        // Print each cell in the row
+        for (int col = 0; col < SIZE; col++) {
+            printf("%d ", board[row][col]);
+            if (col == 2 || col == 5) {
+                printf("| "); // Vertical separator for 3x3 subgrids
+            }
+        }
+
+        // Print a new line after each row
+        printf("\n");
+
+        // Print horizontal separators after each 3x3 subgrid
+        if (row == 2 || row == 5) {
+            printf("  ");
+            for (int col = 0; col < SIZE * 2 + 3; col++) {
+                printf("-");
+            }
+            printf("\n");
+        }
+    }
+}
+*/

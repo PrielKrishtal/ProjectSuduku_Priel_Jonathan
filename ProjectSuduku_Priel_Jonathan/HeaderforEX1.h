@@ -76,6 +76,9 @@ typedef struct PlayerTreeNode {
 
 
 
+typedef struct PlayersTree{
+    PlayerTreeNode* root;
+}PlayersTree;
 
 
 
@@ -117,9 +120,9 @@ bool insertPlayerNodeToPlaceInList(PlayersList* lst, PlayerNode* node, int index
 
 
 
-
-
-
+bool CheckOptionValidity(int input, Array* cellOptions);
+void fillCellWithInput(short board[][9], Array*** possibilities, int x, int y);
+int FillBoard(short board[][9], Array*** possibilities);
 
 
 
