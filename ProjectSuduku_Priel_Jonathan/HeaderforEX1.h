@@ -29,6 +29,13 @@
     } while (0)
 
 
+typedef struct _Array
+{
+    short* arr;
+    unsigned short size;
+} Array;
+
+
 // Struct to represent a position on the board
 typedef struct Node {
     int row;
@@ -40,7 +47,7 @@ typedef struct Node {
 typedef struct Player {
     char name[MAX_NAME_LENGTH];
     int board[SIZE][SIZE];  // Example board representation
-    int possibleDigits[SIZE];  // Example possible digits
+    Array*** possibleDigits;  // Example possible digits
     struct Player* next;  // Pointer for linked list
 } Player;
 
@@ -49,6 +56,16 @@ typedef struct PlayerNode {
     Player* player;
     struct PlayerNode* next;
 } PlayerNode;
+
+//struct to represnt a players linked list
+typedef struct PlayersList
+{
+    PlayerNode* head;
+    PlayerNode* tail;
+}PlayersList;
+
+
+
 
 // Struct to represent a player node in a binary search tree
 typedef struct PlayerTreeNode {
@@ -59,11 +76,7 @@ typedef struct PlayerTreeNode {
 
 
 
-typedef struct _Array
-{
-    short* arr;
-    unsigned short size;
-} Array;
+
 
 
 
@@ -88,6 +101,28 @@ int FillBoard(short board[][9], Array*** possibilities);
 
 
 
+/*prototype for Linked list of Players: 
+*/
+
+void makeEmptyPlayersList(PlayersList* lst);
+bool isEmptyPlayersList(PlayersList* lst);
+PlayerNode* getPlayerNode(PlayersList* lst, int index);
+PlayerNode* createNewPlayerNode(Player* player, PlayerNode* next);
+void insertPlayerToStartList(PlayersList* lst, Player* player);
+void insertPlayerNodeToStartList(PlayersList* lst, PlayerNode* node);
+void insertPlayerToEndList(PlayersList* lst, Player* player);
+void insertPlayerNodeToEndList(PlayersList* lst, PlayerNode* node);
+bool insertPlayerToPlaceInList(PlayersList* lst, Player* player, int index);
+bool insertPlayerNodeToPlaceInList(PlayersList* lst, PlayerNode* node, int index);
+
+
+
+
+
+
+
+
+
 // Function prototypes
 Node* createLocationList();
 int randomInt(int min, int max);
@@ -95,7 +130,6 @@ Node* deleteNode(Node* head, int index);
 Node* selectRandomLocation(Node* head, int size, int* row, int* col);
 int randomLegalValue(int possibleValues[], int count);
 Player* createPlayer(const char* name);
-void addPlayerToList(PlayerNode** head, Player* player);
 void addPlayerToArray(Player* player, Player* array[], int* count);
 PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player);
 void freeList(Node* head);

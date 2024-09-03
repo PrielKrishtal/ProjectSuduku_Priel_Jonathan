@@ -16,48 +16,171 @@ void freePlayerList(PlayerNode * head);
 void freePlayerTree(PlayerTreeNode * root);
 void freePlayers(Player * head);
 */
-int main() {
-    srand(time(NULL));
 
+void getNumActivePlayers(int* x)
+{
+    printf("Pls enter number of active players:");
+    scanf("%d", &x);
+    //todo: add validity number check
+}
+
+
+
+
+// Function to fill a board with random values
+void createRandomBoard(int board[SIZE][SIZE]) {
+    srand(time(NULL)); // Initialize random seed
+
+    Node* locationList = createLocationList(); // Create a list of all board positions
+    int listSize = SIZE * SIZE; // Start with the maximum number of cells
+
+    // Determine the number of cells to randomly fill (between 1 and 20)
+    int cellsToFill = randomInt(1, 20);
+
+    for (int i = 0; i < cellsToFill; i++) {
+        int row, col;
+        // Select a random location from the list
+        locationList = selectRandomLocation(locationList, listSize--, &row, &col);
+
+        // Define possible values for a Sudoku cell (for simplification, using all values)
+        int possibleValues[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        // Assign a random valid value to the selected board cell
+        board[row][col] = randomLegalValue(possibleValues, SIZE);
+    }
+
+    // Clean up the remaining nodes in the list
+    Node* current = locationList;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+
+
+
+
+PlayersList create_And_Fill_ActivePlayersList(int numPlayers)
+{
+    PlayersList lst; // Declare the players list
+    makeEmptyPlayersList(&lst); // Initialize the list to be empty
+
+    for (int i = 0; i < numPlayers; i++) {
+        char* playerName = (char*)malloc(MAX_NAME_LENGTH * sizeof(char)); // Allocate memory for the player name
+        CHECK_ALLOCATION(playerName);
+
+        printf("Enter player's name: ");
+        scanf("%99s", playerName); // Read the name from user input, ensuring not to exceed the buffer size
+
+        Player* newPlayer = createPlayer(playerName); // Create a new player with the given name
+        createRandomBoard(newPlayer->board); // Fill the player's board with random values
+        newPlayer->possibleDigits = PossibleDigits(newPlayer->board); // Initialize the possible digits array for the board
+
+        insertPlayerToEndList(&lst, newPlayer); // Insert the player at the end of the list as a PlayerNode
+
+        free(playerName); // Free the allocated memory for the name after it's copied in createPlayer
+    }
+
+    return lst; // Return the filled list
+}
+
+
+// Function to create and sort an array of player pointers from a linked list of players
+Player** createAndSortPlayerArray(PlayersList* list,int size) {
+    
+    
+
+    // Allocate an array of player pointers of the right size
+    Player** playerArray = (Player**)malloc(size * sizeof(Player*));
+    CHECK_ALLOCATION(playerArray);  // Use the macro to check allocation and handle any failure
+
+    // Fill the array with pointers to the players
+    PlayerNode* current = list->head;  // set current pointer to the head of the list
+    for (int i = 0; i < size; i++) {
+        if (current != NULL) {
+            playerArray[i] = current->player;  // Assign the player pointer to the array
+            current = current->next;  // Move to the next node
+        }
+    }
+
+    // Now sort the array using the modified bubble sort function
+    bubbleSort(playerArray, size);  // Sort the array based on the sorting criteria defined in bubbleSort
+
+    return playerArray;  // Return the sorted array of player pointers
+}
+
+
+
+// Function to calculate the next size based on the formula
+int calculateNewSize(int currentSize)
+{
+    int x = currentSize + 1; // x is current size + 1
+    int newSize = (int)pow(2, ceil(log2(x))) - 1; // Calculate the new size using the formula
+    return newSize;
+}
+
+// Helper function to resize the array of pointers
+Player** resizeArray(Player** players, int* currentSize)
+{
+    int newSize = calculateNewSize(*currentSize); // Calculate new size using the formula
+
+    // Reallocate the existing array to the new size
+    Player** newPlayers = (Player**)realloc(players, newSize * sizeof(Player*));
+    CHECK_ALLOCATION(newPlayers); // Check if memory allocation is successful
+
+    // Initialize any new cells to NULL
+    for (int i = *currentSize; i < newSize; i++) {
+        newPlayers[i] = NULL;
+    }
+
+    *currentSize = newSize; // Update the current size to the new size
+    return newPlayers; // Return the reallocated array
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void main() {
+    srand(time(NULL));
     // Create the linked lists, array, and tree
     PlayerNode* winnerList = NULL;
     PlayerNode* activePlayerList = NULL;
     PlayerTreeNode* playerTree = NULL;
     Player* activePlayersArray[SIZE * SIZE];
     int activePlayersCount = 0;
+    getNumActivePlayers(&activePlayersCount); //getting number of active players from user
 
-    // Example: Adding players
-    Player* player1 = createPlayer("Alice");
-    Player* player2 = createPlayer("Bob");
+    //create and fill the active players list based on the given size
+    PlayersList activePlayerList = create_And_Fill_ActivePlayersList(&activePlayersCount);
 
-    // Add players to lists
-    addPlayerToList(&activePlayerList, player1);
-    addPlayerToList(&activePlayerList, player2);
+    Player** playerPointersArray = createAndSortPlayerArray(&activePlayerList, &activePlayersCount);
 
-    addPlayerToArray(player1, activePlayersArray, &activePlayersCount);
-    addPlayerToArray(player2, activePlayersArray, &activePlayersCount);
+    // Resize the player array and also update activePlayersCount value
+    playerPointersArray = resizeArray(playerPointersArray, &activePlayersCount); // Resize the array directly
+    
+    
+    PlayerTreeNode* playersTree = buildTreeFromArray(&playerPointersArray,0,&activePlayersCount);
 
-    playerTree = insertPlayerTree(playerTree, player1);
-    playerTree = insertPlayerTree(playerTree, player2);
 
     // Create a linked list of all possible locations
     Node* locationList = createLocationList();
     int size = SIZE * SIZE;  // 81 cells on the board
 
-    // Generate N, the number of cells to be filled (between 1 and 20)
-    int N = randomInt(1, 20);
-
-    // Select N random positions and fill them with random values
-    for (int i = 0; i < N; i++) {
-        int row, col;
-        locationList = selectRandomLocation(locationList, size, &row, &col);
-        size--;  // Reduce the size of the list after removing a position
-
-        // Generate a random value for the selected position
-        int possibleValues[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };  // Example set of possible values
-        int value = randomLegalValue(possibleValues, 9);
-        printf("Location: (%d, %d) - Value: %d\n", row, col, value);
-    }
+   
 
     // Free allocated memory
     freeList(locationList);
@@ -65,7 +188,7 @@ int main() {
     freePlayerTree(playerTree);
     freePlayers(player1); // Freeing all players, assuming no further references
 
-    return 0;
+    
 }
 
 // Function to create a linked list of all possible positions on the board
@@ -152,25 +275,15 @@ Player* createPlayer(const char* name) {
     return newPlayer;
 }
 
-// Function to add a player to a linked list
-void addPlayerToList(PlayerNode** head, Player* player) {
-    PlayerNode* newNode = (PlayerNode*)malloc(sizeof(PlayerNode));
-    if (!newNode) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(1);
-    }
-    newNode->player = player;
-    newNode->next = *head;
-    *head = newNode;
-}
+
 
 // Function to add a player to an array
-void addPlayerToArray(Player* player, Player* array[], int* count) {
+/*void addPlayerToArray(Player* player, Player* array[], int* count) {
     if (*count < SIZE * SIZE) {
         array[*count] = player;
         (*count)++;
     }
-}
+}*/
 
 // Function to insert a player into a binary search tree
 PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player) {
@@ -203,14 +316,6 @@ void freeList(Node* head) {
     }
 }
 
-// Function to free the entire linked list of players
-void freePlayerList(PlayerNode* head) {
-    while (head != NULL) {
-        PlayerNode* temp = head;
-        head = head->next;
-        free(temp);
-    }
-}
 
 // Function to free the entire binary search tree of players
 void freePlayerTree(PlayerTreeNode* root)
@@ -237,7 +342,7 @@ void freePlayers(Player* head) {
 
 
 ///Traversal by order
-void inOrderTraversal(PlayerTreeNode* root, void (func)(Player))
+void inOrderTraversal(PlayerTreeNode* root, void (*func)(Player*))
 {
     if (root != NULL)
     {
@@ -255,12 +360,13 @@ PlayerTreeNode* buildTreeFromArray(Player* array[], int start, int end) {
     if (start > end) return NULL;
 
     int mid = start + (end - start) / 2;
+
     PlayerTreeNode* node = (PlayerTreeNode*)malloc(sizeof(PlayerTreeNode));
-    if (!node) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(1);
-    }
-    node->player = array[mid];
+    CHECK_ALLOCATION(node);
+
+    // Copy the Player struct from the array to the tree node
+    node->player = (array[mid]);  // Use dereferencing to copy the player struct
+
     node->left = buildTreeFromArray(array, start, mid - 1);
     node->right = buildTreeFromArray(array, mid + 1, end);
     return node;
@@ -271,11 +377,11 @@ PlayerTreeNode* buildTreeFromArray(Player* array[], int start, int end) {
 
 ////code for sort players :
 
-void bubbleSort(Player* players[], int count) {
+void bubbleSort(Player** players, int count) {
     for (int i = 0; i < count - 1; i++) {
         for (int j = 0; j < count - i - 1; j++) {
-            if (players[j]->filledCells > players[j + 1]->filledCells ||
-                (players[j]->filledCells == players[j + 1]->filledCells &&
+            if (players[j]->possibleDigits > players[j + 1]->possibleDigits ||
+                (players[j]->possibleDigits == players[j + 1]->possibleDigits &&
                     strcmp(players[j]->name, players[j + 1]->name) > 0)) {
                 // Swap
                 Player* temp = players[j];
@@ -300,8 +406,13 @@ Player* createPlayer(const char* name) {
     }
     strncpy(newPlayer->name, name, MAX_NAME_LENGTH - 1);
     newPlayer->name[MAX_NAME_LENGTH - 1] = '\0';  // Ensure null-termination
-    newPlayer->filledCells = 0;  // Initialize with 0 filled cells
+    newPlayer->possibleDigits = 0;  // Initialize with 0 filled cells
     memset(newPlayer->board, 0, sizeof(newPlayer->board));
     newPlayer->next = NULL;
     return newPlayer;
 }
+
+
+
+
+
