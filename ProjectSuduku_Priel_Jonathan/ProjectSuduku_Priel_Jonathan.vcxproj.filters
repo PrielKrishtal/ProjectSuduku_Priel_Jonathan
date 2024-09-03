@@ -33,6 +33,9 @@
     <ClCompile Include="question3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="objectsFunctions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HeaderforEX1.h">

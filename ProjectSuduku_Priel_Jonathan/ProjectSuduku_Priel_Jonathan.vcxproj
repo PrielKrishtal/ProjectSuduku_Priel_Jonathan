@@ -133,6 +133,7 @@
     <ClCompile Include="DebugMain.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="MainForEx1.c" />
+    <ClCompile Include="objectsFunctions.c" />
     <ClCompile Include="question1.c" />
     <ClCompile Include="question2.c" />
     <ClCompile Include="question3.c" />
