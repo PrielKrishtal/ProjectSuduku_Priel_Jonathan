@@ -29,6 +29,13 @@
     } while (0)
 
 
+typedef struct _Array
+{
+    short* arr;
+    unsigned short size;
+} Array;
+
+
 // Struct to represent a position on the board
 typedef struct Node {
     int row;
@@ -40,30 +47,17 @@ typedef struct Node {
 typedef struct Player {
     char name[MAX_NAME_LENGTH];
     int board[SIZE][SIZE];  // Example board representation
-    int possibleDigits[SIZE];  // Example possible digits
+    Array*** possibleDigits;  // Example possible digits
     struct Player* next;  // Pointer for linked list
 } Player;
 
-// Struct to represent a player node in a linked list
-typedef struct PlayerNode {
-    Player* player;
-    struct PlayerNode* next;
-} PlayerNode;
-
-// Struct to represent a player node in a binary search tree
-typedef struct PlayerTreeNode {
-    Player* player;
-    struct PlayerTreeNode* left;
-    struct PlayerTreeNode* right;
-} PlayerTreeNode;
 
 
 
-typedef struct _Array
-{
-    short* arr;
-    unsigned short size;
-} Array;
+
+
+
+
 
 
 
@@ -72,7 +66,7 @@ typedef struct _Array
   Functions declerations:
 **********************/
 
-Array*** PossibleDigits(short sudokuBoard[][9]);
+Array*** PossibleDigits(short sudokuBoard[][9]);//QUESTION 1
 
 void markNumbers(bool* numPresent, short arr[], int size);
 void findMissingNumbers(bool* numPresent, short** missingNumbers, int* missingCount);
@@ -83,7 +77,21 @@ void checkAndRemoveVal(Array* arr, int valToCheck);
 void freePos(Array* array);
 bool checkBoardValidity(short board[][9]);
 void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9]);
-int OneStage(short board[][9], Array*** possibilities, int* x, int* y);
+
+
+int OneStage(short board[][9], Array*** possibilities, int* x, int* y);//QUESTION 2
+
+
+int FillBoard(short board[][9], Array*** possibilities); //QUESTION 3
+
+
+
+
+
+
+
+bool CheckOptionValidity(int input, Array* cellOptions);
+void fillCellWithInput(short board[][9], Array*** possibilities, int x, int y);
 int FillBoard(short board[][9], Array*** possibilities);
 
 
@@ -95,10 +103,9 @@ Node* deleteNode(Node* head, int index);
 Node* selectRandomLocation(Node* head, int size, int* row, int* col);
 int randomLegalValue(int possibleValues[], int count);
 Player* createPlayer(const char* name);
-void addPlayerToList(PlayerNode** head, Player* player);
 void addPlayerToArray(Player* player, Player* array[], int* count);
-PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player);
+
 void freeList(Node* head);
-void freePlayerList(PlayerNode* head);
-void freePlayerTree(PlayerTreeNode* root);
+//void freePlayerList(PlayerNode* head);
+
 void freePlayers(Player* head);

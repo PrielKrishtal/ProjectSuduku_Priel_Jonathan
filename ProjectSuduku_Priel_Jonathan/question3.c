@@ -1,5 +1,6 @@
 #include "HeaderForEX1.h"
-
+#include "PlayersLst.h"
+#include "PlayersTree.h"
 
 bool CheckOptionValidity(int input, Array* cellOptions)
 {

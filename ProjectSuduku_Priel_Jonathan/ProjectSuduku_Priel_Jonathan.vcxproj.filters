@@ -36,9 +36,18 @@
     <ClCompile Include="objectsFunctions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlayersLst_Implementation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HeaderforEX1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayersLst.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayersTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
