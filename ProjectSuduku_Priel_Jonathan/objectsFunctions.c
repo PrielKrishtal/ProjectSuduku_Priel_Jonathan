@@ -108,7 +108,7 @@ Node* deleteNode(Node* head, int index) {
         current = current->next;
     }
     if (current != NULL && current->next != NULL) {
-        Node* temp = current->next;
+        Node* temp =    current->next;
         current->next = temp->next;
         free(temp);
     }
