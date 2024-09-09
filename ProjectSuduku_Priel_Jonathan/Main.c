@@ -5,7 +5,7 @@
 #include "Player.h"
 
 // main for testing
-
+/*
 void main() {
     srand(time(NULL));
     // Create the linked lists, array, and tree
@@ -63,6 +63,7 @@ void main() {
 
 
 }
+*/
 
 
 
@@ -97,15 +98,6 @@ void main() {
     int finalStatus = FillBoard(sudokuBoard, possibleDigits);
     printf("Final Board Status: %s\n", finalStatus == FINISH_SUCCESS ? "Solved" : "Not Solved");
 
-    // Free memory for possibleDigits
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            if (possibleDigits[i][j] != NULL) {
-                free(possibleDigits[i][j]->arr); // Free the array inside the structure
-                free(possibleDigits[i][j]); // Free the structure itself
-            }
-        }
-        free(possibleDigits[i]); // Free the row of pointers
     }
     free(possibleDigits); // Free the top-level pointer
 
