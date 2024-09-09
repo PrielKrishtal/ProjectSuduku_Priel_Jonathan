@@ -1,5 +1,6 @@
 ﻿#include "functionsForMain.h"
 
+
 void initializeBoard(short board[SIZE][SIZE]) 
 {
     for (int i = 0; i < SIZE; i++) {
@@ -48,52 +49,66 @@ void getNumActivePlayers(int* x)
     *x = input;
 }
 
+// Function to print all integers in the linked list of cells
+void printCellsList(ListOfCells* lst, int board[SIZE][SIZE]) 
+{
+    if (lst == NULL) {
+        printf("The list is empty.\n");
+        return;
+    }
 
-// Function to print all integers in the linked list
-void printList(Node* head, int board[SIZE][SIZE]) {
-    Node* current = head; // Start with the head of the list
-    printf("List of integers:\n");
+    CellNode* current = lst->head; // Start with the head of the list
     while (current != NULL) { // Traverse until the end of the list
-        printf("Cell[%d][%d]: %d\n", current->row,current->col,board[current->row][current->col]); // Print the data of the current node
+        printf("Cell[%d][%d]: %d\n", current->row, current->col, board[current->row][current->col]); // Print the data of the current node
         current = current->next; // Move to the next node
     }
     printf("\n"); // Print a newline at the end for better formatting
 }
 
 
-// Function to fill a board with random values
-void createRandomBoard(int board[SIZE][SIZE]) {
+
+// Function to fill a board with random values using ListOfCells
+void createRandomBoard(short board[SIZE][SIZE])
+{
   
+    ListOfCells locationList;
+    makeEmptyListOfCells(&locationList); // Initialize the list with head and tail set to NULL
+    
+    // Populate the list with all possible locations starting from [0,0] until [8,8]
+    for (int r = 0; r < SIZE; r++) {
+        for (int c = 0; c < SIZE; c++) {
+            appendToCellsList(&locationList, r, c); //(just like insertDataToEndOfLst)
+        }
+    }
 
-    Node* locationList = createLocationList(); // Create a list of all board positions
     int listSize = SIZE * SIZE; // Start with the maximum number of cells
+    int cellsToFill = randomInt(1, 20);// Determine the number of cells to randomly fill (between 1 and 20)
 
-    // Determine the number of cells to randomly fill (between 1 and 20)
-    int cellsToFill = randomInt(1, 20);
-
-    for (int i = 0; i < cellsToFill; i++) {
+    for (int i = 0; i < cellsToFill; i++) 
+    {
         int row, col;
-        // Select a random location from the list
-        locationList = selectRandomLocation(locationList, listSize--, &row, &col);
 
-        // Define possible values for a Sudoku cell (for simplification, using all values)
-        int possibleValues[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        // Assign a random valid value to the selected board cell
-        board[row][col] = randomLegalValue(possibleValues, SIZE);
+        // Select a random location from the list and delete it after selection(and filling)
+        selectRandomLocation(&locationList, &listSize, &row, &col);
+
         
+        int possibleValues[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };  // Possible Sudoku Cell values
+
+       
+        board[row][col] = randomLegalValue(possibleValues, SIZE); // Assign a random valid value to the selected board cell
+        printf("value generated randomly for cell [%d][%d] is: %d\n", row, col, board[row][col]);
         
+        // Print the board state after each assignment
+        printf("Current state of the board after updating [%d][%d]:\n", row, col);
+        printBoard(board);
+
     }
 
     printf("List of randoms:\n");
-    printList(locationList, board);
+    printCellsList(&locationList, board);
 
     // Clean up the remaining nodes in the list
-    Node* current = locationList;
-    while (current != NULL) {
-        Node* temp = current;
-        current = current->next;
-        free(temp);
-    }
+    freeListOfCells(&locationList);
 
    
 }
@@ -172,74 +187,98 @@ Player** resizeArray(Player** players, int* currentSize)
 }
 
 
-// Function to create a linked list of all possible positions on the board
-Node* createLocationList() {
-    Node* head = NULL;
-    for (int r = 0; r < SIZE; r++) {
-        for (int c = 0; c < SIZE; c++) {
-            Node* newNode = (Node*)malloc(sizeof(Node));
-            if (!newNode) {
-                fprintf(stderr, "Memory allocation failed\n");
-                exit(1);
-            }
-            newNode->row = r;
-            newNode->col = c;
-            newNode->next = head;
-            head = newNode;
-        }
-    }
-    return head;
-}
 
 // Function to generate a random number between min and max
 int randomInt(int min, int max) {
     return rand() % (max - min + 1) + min;
 }
 
-// Function to delete a node from the linked list at a specific index
-Node* deleteNode(Node* head, int index) {
-    if (index < 0) return head;
 
-    if (index == 0) {
-        Node* temp = head;
-        head = head->next;
-        free(temp);
-        return head;
+// Function to delete a node from the linked list based on row and column values
+void deleteNode(ListOfCells* lst, int row, int col)
+{
+    if (lst->head == NULL) return;  // No node to delete if the list is empty
+
+    CellNode* temp;
+
+    // Special handling if the node to delete is the head of the list
+    if (lst->head->row == row && lst->head->col == col) {
+        temp = lst->head;
+        lst->head = lst->head->next;  // Move the head pointer to the next node
+        if (lst->head == NULL) {
+            lst->tail = NULL;  // If the list becomes empty, tail must also be NULL
+        }
+    }
+    else {
+        // Traverse the list to find the node to delete
+        CellNode* current = lst->head;
+        while (current->next != NULL &&
+            (current->next->row != row || current->next->col != col)) {
+            current = current->next;  // Move to the next node
+        }
+
+        if (current->next == NULL) return;  // Node not found, nothing to delete
+
+        temp = current->next;
+        current->next = temp->next;  // Unlink the node from the list
+        if (temp->next == NULL) {
+            lst->tail = current;  // Update tail if the last node is deleted
+        }
     }
 
-    Node* current = head;
-    for (int i = 0; i < index - 1 && current != NULL; i++) {
-        current = current->next;
-    }
-    if (current != NULL && current->next != NULL) {
-        Node* temp =    current->next;
-        current->next = temp->next;
-        free(temp);
-    }
-    return head;
+    free(temp);  // Free the node that has been removed
 }
 
-// Function to select a random position from the linked list
-Node* selectRandomLocation(Node* head, int size, int* row, int* col) {
-    if (size <= 0 || head == NULL) return head;  // No positions to select from
 
-    int k = randomInt(0, size - 1);
-    Node* current = head;
-    for (int i = 0; i < k && current != NULL; i++) {
-        current = current->next;
+// Function to check if a node with specific row and column exists in the list
+bool nodeExists(ListOfCells* lst, int row, int col)
+{
+    CellNode* current = lst->head;  // Start from the head of the list
+    while (current != NULL) {
+        if (current->row == row && current->col == col) {
+            return true;  // Node with matching row and column found
+        }
+        current = current->next;  // Move to the next node
     }
-    if (current) {
-        *row = current->row;
-        *col = current->col;
-        return deleteNode(head, k);
-    }
-    return head;
+    return false;  // No matching node found
 }
+
+// Function to select a random position on the board by generating two random numbers
+// Function to select a random position on the board by generating two random numbers
+void selectRandomLocation(ListOfCells* lst, int* size, int* row, int* col)
+{
+    if (lst->head == NULL) {
+        printf("Failed to select a random location. List is empty.\n");
+        return;  // No positions to select from
+    }
+
+    // Generate random numbers for row and col separately
+    do {
+        *row = randomInt(0, SIZE - 1);  // Random row between 0 and SIZE-1
+        *col = randomInt(0, SIZE - 1);  // Random col between 0 and SIZE-1
+    } while (!nodeExists(lst, *row, *col)); // Repeat until a valid node is found
+
+    CellNode* current = lst->head;
+
+    // Traverse the list to find the matching node
+    while (current != NULL) {
+        if (current->row == *row && current->col == *col) { // Check if current node matches the random row and col generated
+            deleteNode(lst, current->row, current->col);   // If a match is found, delete the node from the list
+            (*size)--; // Decrement size after successfully deleting a node
+            return; // Exit after finding and deleting the node
+        }
+        current = current->next; // Move to the next node in the list
+    }
+
+    // If we reach here, it means something went wrong
+    printf("Failed to select a random location. No matching node found for (%d, %d).\n", *row, *col);
+}
+
 
 // Function to generate a valid random value for a cell
 int randomLegalValue(int possibleValues[], int count) {
-    int index = randomInt(0, count - 1);
-    return possibleValues[index];
+    int index = randomInt(0, count - 1);// Generate a random index between 0 and count-1
+    return possibleValues[index];// Return the value located at the randomly generated index
 }
 
 
@@ -266,14 +305,7 @@ PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player) {
     return root;
 }
 
-// Function to free the entire linked list of positions
-void freeList(Node* head) {
-    while (head != NULL) {
-        Node* temp = head;
-        head = head->next;
-        free(temp);
-    }
-}
+
 
 
 // Function to free the entire binary search tree of players

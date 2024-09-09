@@ -1,5 +1,6 @@
 #pragma once
 #include "HeaderforEX1.h"
+#include "standard_includes.h"
 
 // Struct to represent a player
 typedef struct Player {
@@ -14,5 +15,4 @@ typedef struct Player {
 //functions declerations
 void initializeBoard(short board[SIZE][SIZE]);
 void freePlayer(Player* player);
-Player* createPlayer(const char* name);
 void addPlayerToArray(Player* player, Player* array[], int* count);

@@ -127,13 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BoardCells.h" />
     <ClInclude Include="functionsForMain.h" />
     <ClInclude Include="HeaderforEX1.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayersLst.h" />
     <ClInclude Include="PlayersTree.h" />
+    <ClInclude Include="standard_includes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BoardCellsFunctions.c" />
     <ClCompile Include="DebugMain.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="MainForEx1.c" />

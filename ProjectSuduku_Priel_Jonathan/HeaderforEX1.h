@@ -1,10 +1,5 @@
 #pragma once
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
+#include "standard_includes.h"
 
 #define SIZE 9
 #define MAX_NAME_LENGTH 100
@@ -38,14 +33,14 @@ typedef struct _Array
 } Array;
 
 
+/*
 // Struct to represent a position on the board
 typedef struct Node {
     int row;
     int col;
     struct Node* next;
 } Node;
-
-
+*/
 
 
 
@@ -93,11 +88,7 @@ int FillBoard(short board[][9], Array*** possibilities);
 
 
 // Function prototypes
-Node* createLocationList();
-int randomInt(int min, int max);
-Node* deleteNode(Node* head, int index);
-Node* selectRandomLocation(Node* head, int size, int* row, int* col);
-int randomLegalValue(int possibleValues[], int count);
+
 
 void freePos(Array* array);
 
