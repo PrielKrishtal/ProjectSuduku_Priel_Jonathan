@@ -5,7 +5,7 @@
 #include "Player.h"
 
 // main for testing
-/*
+
 void main() {
     srand(time(NULL));
     // Create the linked lists, array, and tree
@@ -19,20 +19,8 @@ void main() {
 
     //create and fill the active players list based on the given size
     create_And_Fill_ActivePlayersList(&activePlayerList, activePlayersCount);
-    printf("Name is %s at length %d", activePlayerList.head->player->name, strlen(activePlayerList.head->player->name));
-
-    // Print the Sudoku board of each player in the active players list
-    PlayerNode* current = activePlayerList.head; // Start from the head of the list
-    int playerIndex = 1; // Player counter
-
-    while (current != NULL) {
-        printf("Board of player %#d(%s) after list creation:\n", playerIndex, current->player->name);
-        printBoard(current->player->board); // Print the current player's board
-        printf("\n\n");
-
-        current = current->next; // Move to the next player in the list
-        playerIndex++; // Increment the player counter
-    }
+    
+    
 
     Player** playerPointersArray = createAndSortPlayerArray(&activePlayerList, &activePlayersCount);
 
@@ -63,7 +51,7 @@ void main() {
 
 
 }
-*/
+
 
 
 

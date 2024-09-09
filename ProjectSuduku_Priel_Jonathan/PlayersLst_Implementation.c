@@ -1,6 +1,7 @@
 #include "PlayersLst.h"
 
-void makeEmptyPlayersList(PlayersList* lst) {
+void makeEmptyPlayersList(PlayersList* lst)
+{
     lst->head = lst->tail = NULL;
 }
 

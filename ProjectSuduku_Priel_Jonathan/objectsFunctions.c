@@ -1,5 +1,15 @@
 ﻿#include "functionsForMain.h"
 
+void initializeBoard(short board[SIZE][SIZE]) 
+{
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            board[i][j] = -1;
+        }
+    }
+}
+
+
 // Function to create a player
 Player* createPlayer()
 {
@@ -14,8 +24,12 @@ Player* createPlayer()
 
     strncpy(newPlayer->name, buffer, strlen(buffer) + 1); // +1 to include the null terminator
 
-
+    initializeBoard(newPlayer->board);
     createRandomBoard(newPlayer->board); // Fill the player's board with random values
+    printf("Player's board:\n\n");
+    printBoard(newPlayer->board);
+    printf("\n");
+    printf("\n**********************\n");
     newPlayer->possibleDigits = PossibleDigits(newPlayer->board); // Initialize the possible digits array for the board
 
 
@@ -35,9 +49,21 @@ void getNumActivePlayers(int* x)
 }
 
 
+// Function to print all integers in the linked list
+void printList(Node* head, int board[SIZE][SIZE]) {
+    Node* current = head; // Start with the head of the list
+    printf("List of integers:\n");
+    while (current != NULL) { // Traverse until the end of the list
+        printf("Cell[%d][%d]: %d\n", current->row,current->col,board[current->row][current->col]); // Print the data of the current node
+        current = current->next; // Move to the next node
+    }
+    printf("\n"); // Print a newline at the end for better formatting
+}
+
+
 // Function to fill a board with random values
 void createRandomBoard(int board[SIZE][SIZE]) {
-    //srand(time(NULL)); // Initialize random seed
+  
 
     Node* locationList = createLocationList(); // Create a list of all board positions
     int listSize = SIZE * SIZE; // Start with the maximum number of cells
@@ -54,7 +80,12 @@ void createRandomBoard(int board[SIZE][SIZE]) {
         int possibleValues[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         // Assign a random valid value to the selected board cell
         board[row][col] = randomLegalValue(possibleValues, SIZE);
+        
+        
     }
+
+    printf("List of randoms:\n");
+    printList(locationList, board);
 
     // Clean up the remaining nodes in the list
     Node* current = locationList;
@@ -63,6 +94,8 @@ void createRandomBoard(int board[SIZE][SIZE]) {
         current = current->next;
         free(temp);
     }
+
+   
 }
 
 

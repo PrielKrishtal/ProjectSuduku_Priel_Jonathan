@@ -1,14 +1,13 @@
 #include "HeaderForEX1.h"
 
 // Function to print the Sudoku board
-void printBoard(short sudokuBoard[][SIZE])
-{
+void printBoard(short sudokuBoard[][SIZE]) {
     printf("Sudoku Board:\n");
-    for (int i = 0; i < SIZE; i++)
-    {
-        for (int j = 0; j < SIZE; j++)
-        {
-            printf("%2d ", sudokuBoard[i][j]);
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+           
+           printf("%2d ", sudokuBoard[i][j]);  // Print the number with space for alignment
+            
         }
         printf("\n");
     }
