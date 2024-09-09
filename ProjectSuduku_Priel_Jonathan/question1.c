@@ -63,7 +63,7 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
         CHECK_ALLOCATION(allPossibleVal[i]);
     }
 
-    // Create a single temporary array to store row, column, or cube values
+    // Create a single temporary array to store for compartion: row, column, or cube values
     short* temp = (short*)malloc(sizeof(short) * SIZE);
     CHECK_ALLOCATION(temp);
 
@@ -74,10 +74,11 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
             printf("\n");
             if (sudokuBoard[i][j] == -1)
             {
-                bool numPresent[9] = { false };
+                bool numPresent[9] = { false }; //initalize a boolean array in order to mark values that arent available
 
                 // Get row values and update numPresent
                 checkRowVal(sudokuBoard, i, temp);
+                //****************************** NEEDS TO BE REMOVED ***************************
                 printf("Checking cell (%d, %d):\n", i, j);
                 printf("__________________________\n");
                 printf("Row values: ");

@@ -19,6 +19,8 @@
 #define FINISH_SUCCESS 1
 #define FINISH_FAILURE -1
 
+#define FILE_NAME "winnersList.txt"
+
 /// Macro for checking allocations
 #define CHECK_ALLOCATION(ptr) \
     do { \
@@ -43,13 +45,7 @@ typedef struct Node {
     struct Node* next;
 } Node;
 
-// Struct to represent a player
-typedef struct Player {
-    char name[MAX_NAME_LENGTH];
-    int board[SIZE][SIZE];  // Example board representation
-    Array*** possibleDigits;  // Example possible digits
-    struct Player* next;  // Pointer for linked list
-} Player;
+
 
 
 
@@ -67,7 +63,7 @@ typedef struct Player {
 **********************/
 
 Array*** PossibleDigits(short sudokuBoard[][9]);//QUESTION 1
-
+void printBoard(short sudokuBoard[][SIZE]);
 void markNumbers(bool* numPresent, short arr[], int size);
 void findMissingNumbers(bool* numPresent, short** missingNumbers, int* missingCount);
 void checkRowVal(short sudokuBoard[][SIZE], int row, short* tempArr);
@@ -102,10 +98,8 @@ int randomInt(int min, int max);
 Node* deleteNode(Node* head, int index);
 Node* selectRandomLocation(Node* head, int size, int* row, int* col);
 int randomLegalValue(int possibleValues[], int count);
-Player* createPlayer(const char* name);
-void addPlayerToArray(Player* player, Player* array[], int* count);
 
-void freeList(Node* head);
-//void freePlayerList(PlayerNode* head);
+void freePos(Array* array);
 
-void freePlayers(Player* head);
+
+

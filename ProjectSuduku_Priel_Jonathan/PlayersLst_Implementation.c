@@ -1,5 +1,4 @@
-#include "HeaderforEX1.h"
-
+#include "PlayersLst.h"
 
 void makeEmptyPlayersList(PlayersList* lst) {
     lst->head = lst->tail = NULL;
@@ -99,3 +98,49 @@ bool insertPlayerNodeToPlaceInList(PlayersList* lst, PlayerNode* node, int index
     return true;
 }
 
+void removePlayerFromList(PlayersList* lst, Player* player)
+{
+    PlayerNode* current = lst->head;
+    PlayerNode* previous = NULL;
+
+    while (current != NULL) {
+        if (current->player == player) {
+            if (previous == NULL) { // Player is at the head
+                lst->head = current->next;
+                if (current->next == NULL) { // It was the only node, so update tail as well
+                    lst->tail = NULL;
+                }
+            }
+            else {
+                previous->next = current->next;
+                if (current->next == NULL) { // Player is at the tail
+                    lst->tail = previous;
+                }
+            }
+            free(current);  // Free the node, assuming player data is handled elsewhere
+            return;  // Exit after removal
+        }
+        previous = current;
+        current = current->next;
+    }
+}
+
+
+void freePlayersList(PlayersList* lst) 
+{
+    if (lst == NULL) return; // Safety check to ensure the list is not NULL
+
+    PlayerNode* current = lst->head;
+    while (current != NULL) {
+        PlayerNode* next = current->next; // Save reference to the next node
+
+        freePlayer(current->player); // Free the player data using the freePlayer function
+        free(current); // Free the node itself
+
+        current = next; // Move to the next node
+    }
+
+    // Reset the list pointers after the list is completely freed
+    lst->head = NULL;
+    lst->tail = NULL;
+}

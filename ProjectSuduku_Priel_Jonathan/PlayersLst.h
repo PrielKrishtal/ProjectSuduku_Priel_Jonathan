@@ -1,5 +1,5 @@
 #pragma once
-#include "HeaderforEX1.h"
+#include "Player.h"
 
 // Struct to represent a player node in a linked list
 typedef struct PlayerNode {
@@ -29,3 +29,5 @@ void insertPlayerToEndList(PlayersList* lst, Player* player);
 void insertPlayerNodeToEndList(PlayersList* lst, PlayerNode* node);
 bool insertPlayerToPlaceInList(PlayersList* lst, Player* player, int index);
 bool insertPlayerNodeToPlaceInList(PlayersList* lst, PlayerNode* node, int index);
+void removePlayerFromList(PlayersList* lst, Player* player);
+void freePlayersList(PlayersList* lst);

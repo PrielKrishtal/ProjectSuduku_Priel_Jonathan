@@ -13,12 +13,6 @@ bool CheckOptionValidity(int input, Array* cellOptions)
 	return false; // Return false if no match is found
 }
 
-
-
-
-
-
-
 void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 {
 	int input;
@@ -55,24 +49,38 @@ int FillBoard(short board[][9], Array*** possibilities)
 	int x = -1, y = -1;
 	int finish_status = OneStage(board, possibilities, &x,&y);
 
-	if (x == -1 && y == -1 ) // x and y's initialized values havent been changes thus there is no cell with more than 1 option 
+	if (!checkBoardValidity(board))// if its initailly wrong
 	{
-		printf("FILLED\n");
-		return finish_status;
+		printf("FAILED");
+		return FINISH_FAILURE;
+	}
+
+	if (x == -1 && y == -1 )//if board is fully filled
+	{
+		if(checkBoardValidity(board) == true)
+		{
+			printf("FILLED\n");
+			return finish_status;
+		}
+
+		printf("FAILED");
+		return FINISH_FAILURE;
+		
 	}
 
 
-	else 
+	else //if the board isnt fully filled(correctly)
 	{
+
 		bool boardValidity;
 		while (finish_status == NOT_FINISH) // iterating while the board hasnt been fully filled
 		{
-			if (possibilities[x][y]->size == 0)
+			if (possibilities[x][y]->size == 0) //if a cell has 0 options its a failure
 			{
 				printf("FAILED: cell[%d][%d] had 0 options!",x,y);
 				return FINISH_FAILURE;
 			}
-
+			
 			fillCellWithInput(board, possibilities, x, y); // call a helper function to deal with the input of the user
 			boardValidity = checkBoardValidity(board); // call a helper function to check that the board is valid
 			if (!boardValidity){//if its not valid: we stop

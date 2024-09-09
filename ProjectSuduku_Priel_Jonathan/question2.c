@@ -92,7 +92,7 @@ void freePos(Array* array)
 
 bool checkBoardValidity(short board[][9])
 {
-	bool used[10]; // Array to track numbers 1-9 (index 0 is unused)
+	bool used[SIZE+1]; // Array to track numbers 1-9 (index 0 is unused)
 
 	// Check each row for duplicates
 	for (int i = 0; i < SIZE; i++) {
@@ -178,7 +178,7 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 
 				}
 
-				else
+				else // has more than 1 option in possibilities
 				{
 					boardStatus = NOT_FINISH; //updating board satatus to not finished
 					if (possibilities[i][j]->size < minPosSize)//else: if cell has more than 1 possiblity
@@ -216,6 +216,7 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 		printf("FINISH_FAILURE");
 		return boardStatus;
 	}
+
 
 }
 

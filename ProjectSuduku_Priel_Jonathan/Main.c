@@ -1,8 +1,74 @@
 #include "HeaderForEX1.h"
-
+#include "PlayersLst.h"
+#include "PlayersTree.h"
+#include "functionsForMain.h"
+#include "Player.h"
 
 // main for testing
 
+void main() {
+    srand(time(NULL));
+    // Create the linked lists, array, and tree
+    PlayersList winnerList, activePlayerList;
+    PlayersTree tree_Of_Players;
+
+    makeEmptyPlayersList(&winnerList);
+
+    int activePlayersCount = 0;
+    getNumActivePlayers(&activePlayersCount); //getting number of active players from user
+
+    //create and fill the active players list based on the given size
+    create_And_Fill_ActivePlayersList(&activePlayerList, activePlayersCount);
+    printf("Name is %s at length %d", activePlayerList.head->player->name, strlen(activePlayerList.head->player->name));
+
+    // Print the Sudoku board of each player in the active players list
+    PlayerNode* current = activePlayerList.head; // Start from the head of the list
+    int playerIndex = 1; // Player counter
+
+    while (current != NULL) {
+        printf("Board of player %#d(%s) after list creation:\n", playerIndex, current->player->name);
+        printBoard(current->player->board); // Print the current player's board
+        printf("\n\n");
+
+        current = current->next; // Move to the next player in the list
+        playerIndex++; // Increment the player counter
+    }
+
+    Player** playerPointersArray = createAndSortPlayerArray(&activePlayerList, &activePlayersCount);
+
+    // Resize the player array and also update activePlayersCount value
+    playerPointersArray = resizeArray(playerPointersArray, &activePlayersCount); // Resize the array directly
+
+
+    tree_Of_Players.root = buildTreeFromArray(&playerPointersArray, 0, &activePlayersCount); //using build treeFromArray as setting it as our's tree's root
+
+
+    if (activePlayersCount > 0) //if we have at least 1 active player
+    {
+        inOrderProcess(tree_Of_Players.root, &activePlayerList, &winnerList);
+        void printBoardToFile(FILE * file, int board[SIZE][SIZE]); // need to handle diffrently as if i get file(?)
+        printWinnersToFile(&winnerList, FILE_NAME);
+
+    }
+
+
+
+
+    // Free allocated memory
+    freePlayersList(&activePlayerList);
+    freePlayersList(&winnerList);
+    freePlayerArray(playerPointersArray, activePlayersCount);
+    freePlayerTree(tree_Of_Players.root);
+
+
+
+}
+
+
+
+
+
+/* 
 void main() {
     short sudokuBoard[9][9] = {
         { 5,-1, 4,-1, 7,-1,-1, 1,-1},
@@ -47,69 +113,4 @@ void main() {
 
 }
 
-
-/*
-void main() {
-    short sudokuBoard[9][9] = {
-        { 5,-1, 4,-1, 7,-1,-1, 1,-1},
-        { 6,-1, 2, 1,-1,-1, 3,-1,-1},
-        { 1,-1, 8,-1, 4,-1,-1, 6,-1},
-        {-1, 5,-1,-1, 6,-1,-1, 2,-1},
-        {-1, 2,-1, 8,-1, 3,-1,-1,-1},
-        {-1,-1,-1,-1,-1, 4,-1, 5, 6},
-        {-1, 6, 1, 5, 3, 7, 2, 8, 4},
-        {-1, 8, 7,-1, 1, 9,-1, 3,-1},
-        {-1,-1,-1, 2, 8,-1,-1,-1, 9 }
-    };
-
-    printf("Initial Sudoku Board:\n");
-    printBoard(sudokuBoard); // Assumes printBoard function is defined to print the board state
-    printf("\n");
-    printf("\n");
-
-    Array*** possibleDigits = PossibleDigits(sudokuBoard); // Initialize possible digits array
-    printf("\n");
-    printf("Initial possible digits for each cell:\n");
-    printPossibleDigits(possibleDigits); // Print initial possibilities
-
-    int x = 0, y = 0; // Variables to hold coordinates of the last modified cell
-
-    // Call OneStage to process one solving step and print debug information
-
-    printf("\n");
-    printf("Question 2: Processing one stage...\n");
-    printf(" __________________________\n");
-
-    int status = OneStage(sudokuBoard, possibleDigits, &x, &y);//prints status and gives numeric info of status
-    printf("\n");
-
-    // Output results from the OneStage function
-    printf("After OneStage, status: %d \n\n", status);
-    printf("Cell with minimal posibilites is: [%d, %d]\n", x, y);
-    printf(" ___________________________________________\n");
-    printf("Updated Sudoku Board:\n");
-    printBoard(sudokuBoard);
-
-    printf("***********************************************************************************************\n\n\n");
-    printf("CHEKING VALUES AFTER QUESTION 2:\n");
-    // Optionally, print the updated possible digits
-    printf("Updated possible digits for each cell after OneStage:\n");
-    possibleDigits = PossibleDigits(sudokuBoard); // Initialize possible digits array
-    printf("\n");
-    printf("Initial possible digits for each cell:\n");
-    printPossibleDigits(possibleDigits); // Print initial possibilities
-
-
-    // Free memory for possibleDigits
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            if (possibleDigits[i][j] != NULL) {
-                free(possibleDigits[i][j]->arr); // Free the array inside the structure
-                free(possibleDigits[i][j]); // Free the structure itself
-            }
-        }
-        free(possibleDigits[i]); // Free the row of pointers
-    }
-    free(possibleDigits); // Free the top-level pointer
-}
 */

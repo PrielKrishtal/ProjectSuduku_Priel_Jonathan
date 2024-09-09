@@ -39,6 +39,9 @@
     <ClCompile Include="PlayersLst_Implementation.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerStruct_Functions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HeaderforEX1.h">
@@ -48,6 +51,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PlayersTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functionsForMain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
