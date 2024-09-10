@@ -19,22 +19,19 @@ void main() {
 
     //create and fill the active players list based on the given size
     create_And_Fill_ActivePlayersList(&activePlayerList, activePlayersCount);
-    
-    
 
-    Player** playerPointersArray = createAndSortPlayerArray(&activePlayerList, &activePlayersCount);
+    Player** playerPointersArray = createAndSortPlayerArray(&activePlayerList, activePlayersCount);
 
     // Resize the player array and also update activePlayersCount value
     playerPointersArray = resizeArray(playerPointersArray, &activePlayersCount); // Resize the array directly
 
 
-    tree_Of_Players.root = buildTreeFromArray(&playerPointersArray, 0, &activePlayersCount); //using build treeFromArray as setting it as our's tree's root
+    tree_Of_Players.root = buildTreeFromArray(playerPointersArray, 0, (activePlayersCount-1)); //using build treeFromArray as setting it as our's tree's root
 
 
     if (activePlayersCount > 0) //if we have at least 1 active player
     {
-        inOrderProcess(tree_Of_Players.root, &activePlayerList, &winnerList);
-        void printBoardToFile(FILE * file, int board[SIZE][SIZE]); // need to handle diffrently as if i get file(?)
+        inOrderProcess(tree_Of_Players.root, &activePlayerList, &winnerList,&activePlayersCount);
         printWinnersToFile(&winnerList, FILE_NAME);
 
     }

@@ -45,6 +45,9 @@
     <ClCompile Include="BoardCellsFunctions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RandomFunctions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HeaderforEX1.h">

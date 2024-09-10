@@ -1,7 +1,6 @@
 #include "HeaderForEX1.h"
 
 // Function to print the Sudoku board
-// Function to print the Sudoku board with visual separators for 3x3 grids
 void printBoard(short sudokuBoard[][SIZE]) {
     printf("  | ");
     for (int col = 0; col < SIZE; col++) {

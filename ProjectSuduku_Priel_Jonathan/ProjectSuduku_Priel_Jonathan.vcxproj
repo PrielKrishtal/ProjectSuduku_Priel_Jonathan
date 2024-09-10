@@ -146,6 +146,7 @@
     <ClCompile Include="question1.c" />
     <ClCompile Include="question2.c" />
     <ClCompile Include="question3.c" />
+    <ClCompile Include="RandomFunctions.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
