@@ -31,8 +31,12 @@ void main() {
 
     if (activePlayersCount > 0) //if we have at least 1 active player
     {
+        printf("Before: %d players\n", activePlayersCount);
         inOrderProcess(tree_Of_Players.root, &activePlayerList, &winnerList,&activePlayersCount);
-        printWinnersToFile(&winnerList, FILE_NAME);
+        printf("After: %d players\n", activePlayersCount);
+        if (activePlayersCount > 0)
+            printWinnersToFile(&winnerList, FILE_NAME);
+        printf("Number of winners is 0\n");
 
     }
 

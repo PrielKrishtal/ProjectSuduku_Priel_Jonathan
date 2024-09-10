@@ -275,7 +275,7 @@ Player* createPlayer(const char* name)
 */
 
 // Function to perform in-order traversal and process each player
-void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers,int* numOfActivePlayers)
+void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers, int* numOfActivePlayers)
 {
     if (root == NULL)
         return;
@@ -284,34 +284,35 @@ void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersLis
     inOrderProcess(root->left, activePlayers, winnerPlayers, numOfActivePlayers);
 
     // Process current player
-    if (root->player != NULL) 
+    if (root->player != NULL)
     {
-        int x = 0, y = 0; // Coordinates for the cell with minimal possibilities
-        int status = OneStage(root->player->board, root->player->possibleDigits, &x, &y);
+        int status = FillBoard(root->player->board, root->player->possibleDigits); // Use FillBoard to process the player's board
 
         if (status == FINISH_FAILURE) {
             printf("%s has finished with failure and is out of the game.\n", root->player->name);
-            removePlayerFromList(activePlayers, root->player);// Remove player from active list
-            root->player = NULL;  // Set player pointer to NULL in the tree
+            removePlayerFromList(activePlayers, root->player); // Remove player from active list
             *numOfActivePlayers--;
+            root->player = NULL;
         }
         else if (status == FINISH_SUCCESS) {
             printf("%s has finished successfully and is moved to the winner's list.\n", root->player->name);
-            removePlayerFromList(activePlayers, root->player);// Remove player from active list
             insertPlayerToEndList(winnerPlayers, root->player); // Move player to winners list
-            root->player = NULL;  // Set player pointer to NULL in the tree
             *numOfActivePlayers--;
+            root->player = NULL;
         }
         else if (status == NOT_FINISH) {
-            // Allow player to choose an option for the cell with minimal possibilities
-            printf("Player %s hasnt finished and needs to face a selcetion of cell value:\n", root->player->name);
-            fillCellWithInput(root->player->board, root->player->possibleDigits, x, y);
+            // This branch might be redundant depending on how FillBoard handles NOT_FINISH statuses
+            printf("Player %s has not finished yet and may need further actions.\n", root->player->name);
         }
+
+        
+        
     }
 
     // Traverse right subtree
     inOrderProcess(root->right, activePlayers, winnerPlayers, numOfActivePlayers);
 }
+
 
 
 
