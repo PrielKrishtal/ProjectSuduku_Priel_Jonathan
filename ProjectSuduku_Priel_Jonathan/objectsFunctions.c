@@ -88,7 +88,7 @@ void createRandomBoard(short board[SIZE][SIZE])
     {
         int row, col;
 
-        // Select a random location from the list and delete it after selection(and filling)
+        // Select a random location from the list to be deleted
         selectRandomLocation(&locationList, &listSize, &row, &col);
 
         
@@ -243,7 +243,7 @@ bool nodeExists(ListOfCells* lst, int row, int col)
     return false;  // No matching node found
 }
 
-// Function to select a random position on the board by generating two random numbers
+
 // Function to select a random position on the board by generating two random numbers
 void selectRandomLocation(ListOfCells* lst, int* size, int* row, int* col)
 {
@@ -256,7 +256,7 @@ void selectRandomLocation(ListOfCells* lst, int* size, int* row, int* col)
     do {
         *row = randomInt(0, SIZE - 1);  // Random row between 0 and SIZE-1
         *col = randomInt(0, SIZE - 1);  // Random col between 0 and SIZE-1
-    } while (!nodeExists(lst, *row, *col)); // Repeat until a valid node is found
+    } while (!nodeExists(lst, *row, *col));//Repeat until a valid node is found(Invalid case would be generating an index [row][col] of a node we have previously deleted before)
 
     CellNode* current = lst->head;
 

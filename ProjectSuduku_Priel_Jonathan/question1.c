@@ -1,17 +1,43 @@
 #include "HeaderForEX1.h"
 
 // Function to print the Sudoku board
+// Function to print the Sudoku board with visual separators for 3x3 grids
 void printBoard(short sudokuBoard[][SIZE]) {
-    printf("Sudoku Board:\n");
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-           
-           printf("%2d ", sudokuBoard[i][j]);  // Print the number with space for alignment
-            
+    printf("  | ");
+    for (int col = 0; col < SIZE; col++) {
+        printf("%d ", col);  // Print the column headers
+        if ((col + 1) % 3 == 0 && col < SIZE - 1) {
+            printf("| ");  // Print vertical separators for columns
         }
-        printf("\n");
     }
+    printf("\n");
+
+    // Print a separator line before the board starts
+    printf("-------------------------\n");
+
+    for (int i = 0; i < SIZE; i++) {
+        printf("%d |", i);  // Print the row number followed by a vertical line
+        for (int j = 0; j < SIZE; j++) {
+            if (sudokuBoard[i][j] == -1) {  // Check if the cell is empty
+                printf("%2d", sudokuBoard[i][j]);  // Print -1 for empty cells
+            }
+            else {
+                printf("%2d", sudokuBoard[i][j]);  // Print the value with correct spacing
+            }
+            if ((j + 1) % 3 == 0 && j < SIZE - 1) {
+                printf(" |");  // Print vertical separators within the row
+            }
+        }
+        printf(" \n");
+        if ((i + 1) % 3 == 0 && i < SIZE - 1) {
+            printf("-------------------------\n");  // Print horizontal separators after every 3 rows
+        }
+    }
+
+    // Print a separator line at the bottom of the board
+    printf("-------------------------\n");
 }
+
 
 // Function to print the possible digits
 void printPossibleDigits(Array*** allPossibleVal)
