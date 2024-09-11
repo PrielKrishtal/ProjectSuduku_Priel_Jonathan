@@ -275,13 +275,13 @@ Player* createPlayer(const char* name)
 */
 
 // Function to perform in-order traversal and process each player
-void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers, int* numOfActivePlayers)
+void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers)
 {
     if (root == NULL)
         return;
 
     // Traverse left subtree
-    inOrderProcess(root->left, activePlayers, winnerPlayers, numOfActivePlayers);
+    inOrderProcess(root->left, activePlayers, winnerPlayers);
 
     // Process current player
     if (root->player != NULL)
@@ -291,13 +291,11 @@ void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersLis
         if (status == FINISH_FAILURE) {
             printf("%s has finished with failure and is out of the game.\n", root->player->name);
             removePlayerFromList(activePlayers, root->player); // Remove player from active list
-            *numOfActivePlayers--;
             root->player = NULL;
         }
         else if (status == FINISH_SUCCESS) {
             printf("%s has finished successfully and is moved to the winner's list.\n", root->player->name);
             insertPlayerToEndList(winnerPlayers, root->player); // Move player to winners list
-            *numOfActivePlayers--;
             root->player = NULL;
         }
         else if (status == NOT_FINISH) {
@@ -310,91 +308,82 @@ void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersLis
     }
 
     // Traverse right subtree
-    inOrderProcess(root->right, activePlayers, winnerPlayers, numOfActivePlayers);
+    inOrderProcess(root->right, activePlayers, winnerPlayers);
 }
 
 
 
 
-
-// Function to print each player's board
 // Function to print the Sudoku board to a file
-void printBoardToFile(FILE* file, int board[SIZE][SIZE])
+void printBoardToFile(FILE* file, short board[SIZE][SIZE])
 {
-    if (!file) 
+    if (!file)
     {
         fprintf(stderr, "Invalid file pointer.\n");
         return;
     }
 
     // Print the header for columns
-    fprintf(file, "   ");
-    for (int col = 0; col < SIZE; col++)
-    {
-        fprintf(file, "%d ", col);
-        if (col == 2 || col == 5) {
-            fprintf(file, "| ");
+    fprintf(file, "  | ");
+    for (int col = 0; col < SIZE; col++) {
+        fprintf(file, "%d ", col);  // Print the column headers
+        if ((col + 1) % 3 == 0 && col < SIZE - 1) {
+            fprintf(file, "| ");  // Print vertical separators for columns
         }
     }
     fprintf(file, "\n");
 
-    // Print the top border
-    fprintf(file, "  ");
-    for (int col = 0; col < SIZE * 2 + 3; col++) 
-    {
-        fprintf(file, "-");
-    }
-    fprintf(file, "\n");
+    // Print a separator line before the board starts
+    fprintf(file, "-------------------------\n");
 
-    // Print each row of the board
-    for (int row = 0; row < SIZE; row++) {
-        // Print the row index
-        fprintf(file, "%d |", row);
-
-        // Print each cell in the row
-        for (int col = 0; col < SIZE; col++) {
-            fprintf(file, "%d ", board[row][col]);
-            if (col == 2 || col == 5) {
-                fprintf(file, "| "); // Vertical separator for 3x3 subgrids
+    for (int i = 0; i < SIZE; i++) {
+        fprintf(file, "%d | ", i);  // Print the row number followed by a vertical line
+        for (int j = 0; j < SIZE; j++) {
+            fprintf(file, "%2d", board[i][j]);  // Print the value with correct spacing
+            if ((j + 1) % 3 == 0 && j < SIZE - 1) {
+                fprintf(file, " | ");  // Print vertical separators within the row
             }
         }
-
-        // Print a new line after each row
         fprintf(file, "\n");
-
-        // Print horizontal separators after each 3x3 subgrid
-        if (row == 2 || row == 5) {
-            fprintf(file, "  ");
-            for (int col = 0; col < SIZE * 2 + 3; col++) {
-                fprintf(file, "-");
-            }
-            fprintf(file, "\n");
+        if ((i + 1) % 3 == 0 && i < SIZE - 1) {
+            fprintf(file, "-------------------------\n");  // Print horizontal separators after every 3 rows
         }
     }
+
+    // Print a separator line at the bottom of the board
+    fprintf(file, "-------------------------\n");
 }
 
+
 // Function to print the list of winners and their boards to a text file
-void printWinnersToFile(PlayersList* winnerList)
-{
+void printWinnersToFile(PlayersList* winnerList) {
     FILE* file = fopen(FILE_NAME, "w");  // Open the file for writing
     if (file == NULL) {
         fprintf(stderr, "Error opening file for writing\n");
         return;
     }
 
-    // Iterate through the list of winners
-    PlayerNode* current = winnerList;
+    
+
+    PlayerNode* current = winnerList->head;
     while (current != NULL) {
-        // Print each winner's name and their board
-        fprintf(file, "Winner: %s\n", current->player->name);
-        fprintf(file, "Board:\n");
-        printBoardToFile(file, current->player->board);  // Print the board
-        fprintf(file, "\n");  // Add a newline for separation between entries
+        if (current->player != NULL) { // Check if the player has not been set to NULL after removal
+            fprintf(file, "Winner: %s\n", current->player->name);
+            fprintf(file, "Board:\n");
+            if (current->player->board != NULL) {
+                printBoardToFile(file, current->player->board);
+            }
+            else {
+                fprintf(file, "No board data available.\n");
+            }
+            fprintf(file, "\n");
+        }
         current = current->next;
     }
 
     fclose(file);  // Close the file
 }
+
 
 
 

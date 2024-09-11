@@ -6,6 +6,36 @@
 
 // main for testing
 
+void printAllPlayerBoards(PlayersList* list)
+{
+    PlayerNode* current = list->head;  // Start with the head of the list
+    int playerNumber = 1;  // To keep track of player numbers for easier readability
+
+    while (current != NULL) {  // Traverse until the end of the list
+        printf("Player #%d - %s: board:\n", playerNumber++,current->player->name);
+        printBoard(current->player->board);  // Assuming printBoard is defined to handle the board printing
+        printf("\n");  // Print a newline for better formatting between boards
+
+        current = current->next;  // Move to the next node in the list
+    }
+}
+
+// Function to count the number of players in a linked list
+int countPlayersInList(PlayersList* winnerList)
+{
+    int count = 0;
+    PlayerNode* current = winnerList->head;  // Start with the head of the list
+
+    // Traverse the linked list and count each node
+    while (current != NULL) {
+        count++;  // Increment count for each player found
+        current = current->next;  // Move to the next node in the list
+    }
+
+    return count;  // Return the total number of players in the list
+}
+
+
 void main() {
     srand(time(NULL));
     // Create the linked lists, array, and tree
@@ -19,7 +49,9 @@ void main() {
 
     //create and fill the active players list based on the given size
     create_And_Fill_ActivePlayersList(&activePlayerList, activePlayersCount);
-
+    printf("\n");
+    printAllPlayerBoards(&activePlayerList);
+    
     Player** playerPointersArray = createAndSortPlayerArray(&activePlayerList, activePlayersCount);
 
     // Resize the player array and also update activePlayersCount value
@@ -32,11 +64,16 @@ void main() {
     if (activePlayersCount > 0) //if we have at least 1 active player
     {
         printf("Before: %d players\n", activePlayersCount);
-        inOrderProcess(tree_Of_Players.root, &activePlayerList, &winnerList,&activePlayersCount);
-        printf("After: %d players\n", activePlayersCount);
-        if (activePlayersCount > 0)
+        inOrderProcess(tree_Of_Players.root, &activePlayerList, &winnerList);
+        int numWinners = countPlayersInList(&winnerList);
+        if (numWinners > 0)
+        {
+           
             printWinnersToFile(&winnerList, FILE_NAME);
-        printf("Number of winners is 0\n");
+        }
+        printf("We have %d winners\n", numWinners);
+          
+        
 
     }
 

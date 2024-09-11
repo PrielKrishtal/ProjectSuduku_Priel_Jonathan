@@ -16,12 +16,18 @@ bool CheckOptionValidity(int input, Array* cellOptions)
 void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 {
 	int input;
-	printf("******************************************************************************************************************************************************\n");
+	//printf("**********************************************************************\n");
 	printf("These are the options for cell (%d,%d): ", x, y);
 	printArray(possibilities[x][y]->arr, possibilities[x][y]->size);
 	printf("\n");
 	printf("Enter one of the given options:");
-	scanf("%d", &input);
+	//scanf("%d", &input);
+
+	// Generate a random index to select a legal value automatically
+	int index = randomInt(0, possibilities[x][y]->size - 1);
+ input = possibilities[x][y]->arr[index];  // Get the randomly selected option
+
+	printf("Automatically selecting option %d for cell (%d,%d) for debugging.\n", input, x, y);
 
 	while (!CheckOptionValidity(input, possibilities[x][y]))
 	{
@@ -51,7 +57,7 @@ int FillBoard(short board[][9], Array*** possibilities)
 
 	if (!checkBoardValidity(board))// if its initailly wrong
 	{
-		printf("FAILED");
+		//printf("FAILED");
 		return FINISH_FAILURE;
 	}
 
@@ -59,11 +65,11 @@ int FillBoard(short board[][9], Array*** possibilities)
 	{
 		if(checkBoardValidity(board) == true)
 		{
-			printf("FILLED\n");
+			//printf("FILLED\n");
 			return finish_status;
 		}
 
-		printf("FAILED");
+		//printf("FAILED");
 		return FINISH_FAILURE;
 		
 	}
@@ -80,17 +86,33 @@ int FillBoard(short board[][9], Array*** possibilities)
 				printf("FAILED: cell[%d][%d] had 0 options!",x,y);
 				return FINISH_FAILURE;
 			}
+
+			// If there's only one option, fill it immediately
+			if (possibilities[x][y]->size == 1)
+			{
+				board[x][y] = possibilities[x][y]->arr[0]; //filling the cell with the only option
+				updatePossibilities(possibilities, x, y, board[x][y], board); //update possible values for surrounding cells
+				freePos(possibilities[x][y]);
+				possibilities[x][y] = NULL;
+			}
+			else {
+				
+				fillCellWithInput(board, possibilities, x, y);  // call a helper function to deal with the input of the user
+			}
+
 			
-			fillCellWithInput(board, possibilities, x, y); // call a helper function to deal with the input of the user
-			boardValidity = checkBoardValidity(board); // call a helper function to check that the board is valid
+
+			
+			
+			boardValidity = checkBoardValidity(board); // Re-assess the board status after each input or auto-fill
 			if (!boardValidity){//if its not valid: we stop
-				printf("FAILED");
+				//printf("FAILED");
 				return FINISH_FAILURE;
 			}
 
 			if (finish_status == FINISH_SUCCESS)
 			{
-				printf("FILLED\n");
+				//printf("FILLED\n");
 				return FINISH_SUCCESS;
 			}
 				
