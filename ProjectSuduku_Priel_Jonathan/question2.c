@@ -27,14 +27,14 @@ void checkAndRemoveVal(Array* arr, int valToCheck)
 // Function to update possible values for Sudoku cells after placing a number on the board
 void updatePossibilities(Array*** pos, int row, int col, int value, short board[][9])
 {
-	printf("\nStarting to update possibilities due to placing of the value %d at position [%d, %d].\n", value, row, col);
+	//printf("\nStarting to update possibilities due to placing of the value %d at position [%d, %d].\n", value, row, col);
 
 	for (int i = 0; i < SIZE; i++)
 	{
 		if (pos[row][i] != NULL)
 		{
 			// Remove the placed value from the possibilities of the cell 
-			printf("Removing %d from possibilities at row [%d][%d].\n", value, row, i);
+			//printf("Removing %d from possibilities at row [%d][%d].\n", value, row, i);
 			checkAndRemoveVal(pos[row][i], value);
 			
 		}
@@ -42,7 +42,7 @@ void updatePossibilities(Array*** pos, int row, int col, int value, short board[
 		if (pos[i][col] != NULL)
 		{
 			// Remove the placed value from the possibilities of the cell 
-			printf("Removing %d from possibilities at column [%d][%d].\n", value, i, col);
+			//printf("Removing %d from possibilities at column [%d][%d].\n", value, i, col);
 			checkAndRemoveVal(pos[i][col], value);
 		}
 
@@ -64,13 +64,13 @@ void updatePossibilities(Array*** pos, int row, int col, int value, short board[
 			
 			if (currentRow < SIZE && currentCol < SIZE) {
 				if (pos[currentRow][currentCol] != NULL) {
-					printf("Removing value at subgrid [%d][%d], value removed: %d\n", currentRow, currentCol, board[currentRow][currentCol]);
+					//printf("Removing value at subgrid [%d][%d], value removed: %d\n", currentRow, currentCol, board[currentRow][currentCol]);
 					checkAndRemoveVal(pos[currentRow][currentCol], value);
 				}
 			}
 
 			else {
-				printf("ERROR: Attempted out of bounds access at [%d][%d]\n", currentRow, currentCol);
+				//printf("ERROR: Attempted out of bounds access at [%d][%d]\n", currentRow, currentCol);
 			}
 		}
 		printf("\n");
@@ -89,7 +89,7 @@ void freePos(Array* array)
 	}
 }
 
-
+//function that insures board validity
 bool checkBoardValidity(short board[][9])
 {
 	bool used[SIZE+1]; // Array to track numbers 1-9 (index 0 is unused)
@@ -142,23 +142,6 @@ bool checkBoardValidity(short board[][9])
 }
 
 
-
-/* 
-    ideas for improvment of the code : 
-	1. take the part of //check if the current position only has a single option and most of the stuff
-	   in the double for loops to update possibilites and tranfer tje status check also.
-
-
-	2. in update possiblities split the cube check to a helper function
-
-
-*/
-
-
-
-
-
-
 int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 {
 	int boardStatus = FINISH_SUCCESS;
@@ -205,15 +188,15 @@ int OneStage(short board[][9], Array*** possibilities, int* x, int* y)
 	switch (boardStatus)
 	{
 	case NOT_FINISH:
-		printf("NOT_FINISH");
+		//printf("NOT_FINISH");
 		return boardStatus;
 		
 	case FINISH_SUCCESS:
-		printf("FINISH_SUCCESS");
+		//printf("FINISH_SUCCESS");
 		return boardStatus;
 
 	case FINISH_FAILURE:
-		printf("FINISH_FAILURE");
+		//printf("FINISH_FAILURE");
 		return boardStatus;
 	}
 

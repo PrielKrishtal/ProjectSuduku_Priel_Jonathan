@@ -69,6 +69,7 @@ void freePos(Array* array);
 bool checkBoardValidity(short board[][9]);
 void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9]);
 
+void printArray(short* arr, int size);
 
 int OneStage(short board[][9], Array*** possibilities, int* x, int* y);//QUESTION 2
 

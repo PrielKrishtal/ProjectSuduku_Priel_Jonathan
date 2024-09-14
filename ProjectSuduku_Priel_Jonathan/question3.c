@@ -2,6 +2,7 @@
 #include "PlayersLst.h"
 #include "PlayersTree.h"
 
+//function that checks the user's option validity
 bool CheckOptionValidity(int input, Array* cellOptions)
 {
 	// Iterate through the array elements
@@ -23,11 +24,12 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 	printf("Enter one of the given options:");
 	//scanf("%d", &input);
 
-	// Generate a random index to select a legal value automatically
+	// ***Generate a random index to select a legal value automatically: ONLY FOR INNER TESTING***
+	
 	int index = randomInt(0, possibilities[x][y]->size - 1);
- input = possibilities[x][y]->arr[index];  // Get the randomly selected option
-
+	input = possibilities[x][y]->arr[index];  // Get the randomly selected option
 	printf("Automatically selecting option %d for cell (%d,%d) for debugging.\n", input, x, y);
+	
 
 	while (!CheckOptionValidity(input, possibilities[x][y]))
 	{
@@ -38,8 +40,6 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 		printf("Enter one of the given options:");
 		scanf("%d", &input);
 	}
-
-
 
 	
     //since the input is fine we: fill it in the board, update the surrounding's cell possibilities ,free this cell possibilities struct
@@ -52,7 +52,7 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 
 int FillBoard(short board[][9], Array*** possibilities)
 {
-	int x = -1, y = -1;
+	int x = -1, y = -1; //setting those values aas indicators to see if there has been a change
 	int finish_status = OneStage(board, possibilities, &x,&y);
 
 	if (!checkBoardValidity(board))// if its initailly wrong
@@ -75,7 +75,7 @@ int FillBoard(short board[][9], Array*** possibilities)
 	}
 
 
-	else //if the board isnt fully filled(correctly)
+	else //if the board isn't fully filled(correctly)
 	{
 
 		bool boardValidity;
@@ -83,7 +83,6 @@ int FillBoard(short board[][9], Array*** possibilities)
 		{
 			if (possibilities[x][y]->size == 0) //if a cell has 0 options its a failure
 			{
-				printf("FAILED: cell[%d][%d] had 0 options!",x,y);
 				return FINISH_FAILURE;
 			}
 
@@ -106,7 +105,7 @@ int FillBoard(short board[][9], Array*** possibilities)
 			
 			boardValidity = checkBoardValidity(board); // Re-assess the board status after each input or auto-fill
 			if (!boardValidity){//if its not valid: we stop
-				//printf("FAILED");
+				printf("Failed - User's selections led to duplications\n");
 				return FINISH_FAILURE;
 			}
 
@@ -118,9 +117,9 @@ int FillBoard(short board[][9], Array*** possibilities)
 				
 
 			finish_status = OneStage(board, possibilities, &x, &y);
-			printf("\n");
-			printBoard(board); // Assumes printBoard function is defined to print the board state
-			printf("\n");
+			//printf("\n");
+			//printBoard(board); // Assumes printBoard function is defined to print the board state
+			//printf("\n");
 		}
 		
 		

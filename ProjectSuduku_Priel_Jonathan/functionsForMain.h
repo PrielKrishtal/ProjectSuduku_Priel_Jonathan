@@ -30,7 +30,8 @@ void printWinnersToFile(PlayerNode* winnerList);
 void printSudoku(int board[SIZE][SIZE]);
 void freePlayerArray(Player** array, int size);
 
-
+// Function to count the number of players in a linked list
+int countPlayersInList(PlayersList* winnerList);
 
 
 /*

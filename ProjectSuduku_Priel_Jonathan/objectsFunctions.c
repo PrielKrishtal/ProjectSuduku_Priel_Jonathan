@@ -15,7 +15,7 @@ void initializeBoard(short board[SIZE][SIZE])
 Player* createPlayer()
 {
     char buffer[MAX_NAME_LENGTH]; //insure the name is 100 char len max
-    printf("Enter player's name: ");
+    printf("Enter Player's name: ");
     scanf("%s", buffer);
 
     Player* newPlayer = (Player*)malloc(sizeof(Player));
@@ -27,11 +27,6 @@ Player* createPlayer()
 
     initializeBoard(newPlayer->board);
     createRandomBoard(newPlayer->board); // Fill the player's board with random values
-    /*
-    printf("Player's board:\n\n");
-    printBoard(newPlayer->board);
-    printf("\n");
-    printf("\n**********************\n");*/
     newPlayer->possibleDigits = PossibleDigits(newPlayer->board); // Initialize the possible digits array for the board
 
 
@@ -78,8 +73,6 @@ void create_And_Fill_ActivePlayersList(PlayersList* lst, int numPlayers)
          newPlayer = createPlayer(); // Create a new player with the given name
 
         insertPlayerToEndList(lst, newPlayer); // Insert the player at the end of the list as a PlayerNode
-
-      
     }
    
 }
@@ -219,16 +212,7 @@ void freePlayerTree(PlayerTreeNode* root)
 }
 
 
-//Traversal by order
-void inOrderTraversal(PlayerTreeNode* root, void (*func)(Player*))
-{
-    if (root != NULL)
-    {
-        inOrderTraversal(root->left, func);
-        func(root->player);
-        inOrderTraversal(root->right, func);
-    }
-}
+
 
 
 
@@ -249,31 +233,6 @@ PlayerTreeNode* buildTreeFromArray(Player* array[], int start, int end) {
     return node;
 }
 
-
-
-
-
-
-
-
-/*
-//code for create new player :
-Player* createPlayer(const char* name)
-{
-    Player* newPlayer = (Player*)malloc(sizeof(Player));
-    if (!newPlayer) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(1);
-    }
-    strncpy(newPlayer->name, name, MAX_NAME_LENGTH - 1);
-    newPlayer->name[MAX_NAME_LENGTH - 1] = '\0';  // Ensure null-termination
-    newPlayer->possibleDigits = 0;  // Initialize with 0 filled cells
-    memset(newPlayer->board, 0, sizeof(newPlayer->board));
-    //newPlayer->next = NULL;
-    return newPlayer;
-}
-*/
-
 // Function to perform in-order traversal and process each player
 void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers)
 {
@@ -286,21 +245,28 @@ void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersLis
     // Process current player
     if (root->player != NULL)
     {
+        printf("Its %s's turn to fill his board:\n", root->player->name);
+        printf("__________________________________________________\n\n");
+        printf("%s's Initial Board:\n\n", root->player->name); //printing for user's interface
+        printBoard(root->player->board);
+        printf("\n");
+
+        
         int status = FillBoard(root->player->board, root->player->possibleDigits); // Use FillBoard to process the player's board
 
         if (status == FINISH_FAILURE) {
-            printf("%s has finished with failure and is out of the game.\n", root->player->name);
+            printf("%s has finished with failure and is out of the game.\n\n", root->player->name);
             removePlayerFromList(activePlayers, root->player); // Remove player from active list
             root->player = NULL;
         }
         else if (status == FINISH_SUCCESS) {
-            printf("%s has finished successfully and is moved to the winner's list.\n", root->player->name);
+            printf("%s has finished successfully and is moved to the winner's list.\n\n", root->player->name);
             insertPlayerToEndList(winnerPlayers, root->player); // Move player to winners list
             root->player = NULL;
         }
         else if (status == NOT_FINISH) {
             // This branch might be redundant depending on how FillBoard handles NOT_FINISH statuses
-            printf("Player %s has not finished yet and may need further actions.\n", root->player->name);
+            printf("Player %s has not finished yet and may need further actions.\n\n", root->player->name);
         }
 
         
@@ -334,7 +300,7 @@ void printBoardToFile(FILE* file, short board[SIZE][SIZE])
     fprintf(file, "\n");
 
     // Print a separator line before the board starts
-    fprintf(file, "-------------------------\n");
+    fprintf(file, "-----------------------------\n");
 
     for (int i = 0; i < SIZE; i++) {
         fprintf(file, "%d | ", i);  // Print the row number followed by a vertical line
@@ -401,4 +367,20 @@ void freePlayerArray(Player** array, int size) {
 
     // After all Player objects are freed, free the array itself
     free(array);
+}
+
+
+// Function to count the number of players in a linked list
+int countPlayersInList(PlayersList* winnerList)
+{
+    int count = 0;
+    PlayerNode* current = winnerList->head;  // Start with the head of the list
+
+    // Traverse the linked list and count each node
+    while (current != NULL) {
+        count++;  // Increment count for each player found
+        current = current->next;  // Move to the next node in the list
+    }
+
+    return count;  // Return the total number of players in the list
 }
