@@ -245,8 +245,9 @@ void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersLis
     // Process current player
     if (root->player != NULL)
     {
-        printf("Its %s's turn to fill his board:\n", root->player->name);
-        printf("__________________________________________________\n\n");
+        printf("\n");
+        printf("Currently Playing: %s\n", root->player->name);
+        printf("_____________________________________\n\n");
         printf("%s's Initial Board:\n\n", root->player->name); //printing for user's interface
         printBoard(root->player->board);
         printf("\n");
@@ -255,18 +256,18 @@ void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersLis
         int status = FillBoard(root->player->board, root->player->possibleDigits); // Use FillBoard to process the player's board
 
         if (status == FINISH_FAILURE) {
-            printf("%s has finished with failure and is out of the game.\n\n", root->player->name);
+            printf("%s's result: finished with failure and is out of the game.\n\n", root->player->name);
             removePlayerFromList(activePlayers, root->player); // Remove player from active list
             root->player = NULL;
         }
         else if (status == FINISH_SUCCESS) {
-            printf("%s has finished successfully and is moved to the winner's list.\n\n", root->player->name);
+            printf("%s's result:finished successfully and is moved to the winner's list.\n\n", root->player->name);
             insertPlayerToEndList(winnerPlayers, root->player); // Move player to winners list
             root->player = NULL;
         }
         else if (status == NOT_FINISH) {
             // This branch might be redundant depending on how FillBoard handles NOT_FINISH statuses
-            printf("Player %s has not finished yet and may need further actions.\n\n", root->player->name);
+            printf("%s's result: has not finished yet and may need further actions.\n\n", root->player->name);
         }
 
         
@@ -290,7 +291,7 @@ void printBoardToFile(FILE* file, short board[SIZE][SIZE])
     }
 
     // Print the header for columns
-    fprintf(file, "  | ");
+    fprintf(file, "   | ");
     for (int col = 0; col < SIZE; col++) {
         fprintf(file, "%d ", col);  // Print the column headers
         if ((col + 1) % 3 == 0 && col < SIZE - 1) {
@@ -312,12 +313,12 @@ void printBoardToFile(FILE* file, short board[SIZE][SIZE])
         }
         fprintf(file, "\n");
         if ((i + 1) % 3 == 0 && i < SIZE - 1) {
-            fprintf(file, "-------------------------\n");  // Print horizontal separators after every 3 rows
+            fprintf(file, "-----------------------------\n");  // Print horizontal separators after every 3 rows
         }
     }
 
     // Print a separator line at the bottom of the board
-    fprintf(file, "-------------------------\n");
+    fprintf(file, "-----------------------------\n");
 }
 
 

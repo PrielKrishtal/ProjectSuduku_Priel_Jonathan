@@ -7,7 +7,9 @@
 
 void main() {
 
-    printf("****** Sudoko Board Game:  *******\n\n");
+    printf("=======================================================================\n");
+    printf("||                        Sudoku Board Game                          ||\n");
+    printf("=======================================================================\n\n");
     srand(time(NULL));
 
     // Create the linked lists, array, and tree:
@@ -35,12 +37,14 @@ void main() {
 
     if (activePlayersCount > 0) //if we have at least 1 active player
     {
-        printf("Starting Game:\n");
+        
         inOrderProcess(tree_Of_Players.root, &activePlayerList, &winnerList);
 
         int numWinners = countPlayersInList(&winnerList);//using a helper function to count the amount of winners(aka size of winnersList)
-        printf("We have %d winners\n", numWinners);
-
+       
+        printf("--------------------------------------------------\n");
+        printf("Game Result : We have %d winners\n", numWinners);
+        printf("--------------------------------------------------\n");
         if (numWinners > 0) //making sure there is at least 1 winner
         {
             printWinnersToFile(&winnerList, FILE_NAME); //printing winners detailes(Name,Board) to a file

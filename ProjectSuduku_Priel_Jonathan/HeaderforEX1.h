@@ -33,31 +33,11 @@ typedef struct _Array
 } Array;
 
 
-/*
-// Struct to represent a position on the board
-typedef struct Node {
-    int row;
-    int col;
-    struct Node* next;
-} Node;
-*/
-
-
-
-
-
-
-
-
-
-
-
 
 /*
-  Functions declerations:
-**********************/
-
-Array*** PossibleDigits(short sudokuBoard[][9]);//QUESTION 1
+  Functions declerations(includes declerations for Question 1,2,3):
+*************************************************************************************************/
+Array*** PossibleDigits(short sudokuBoard[][SIZE]);
 void printBoard(short sudokuBoard[][SIZE]);
 void markNumbers(bool* numPresent, short arr[], int size);
 void findMissingNumbers(bool* numPresent, short** missingNumbers, int* missingCount);
@@ -67,30 +47,13 @@ void checkCubeVal(short sudokuBoard[][SIZE], int row, int col, short* tempArr);
 void checkAndRemoveVal(Array* arr, int valToCheck);
 void freePos(Array* array);
 bool checkBoardValidity(short board[][9]);
-void updatePossibilities(Array*** pos, int* row, int* col, int value, short board[][9]);
-
+void updatePossibilities(Array*** pos, int row, int col, int value, short board[][9]);
 void printArray(short* arr, int size);
-
-int OneStage(short board[][9], Array*** possibilities, int* x, int* y);//QUESTION 2
-
-
-int FillBoard(short board[][9], Array*** possibilities); //QUESTION 3
-
-
-
-
-
-
-
+int OneStage(short board[][9], Array*** possibilities, int* x, int* y);
+int FillBoard(short board[][9], Array*** possibilities); 
 bool CheckOptionValidity(int input, Array* cellOptions);
 void fillCellWithInput(short board[][9], Array*** possibilities, int x, int y);
 int FillBoard(short board[][9], Array*** possibilities);
-
-
-
-// Function prototypes
-
-
 void freePos(Array* array);
 
 

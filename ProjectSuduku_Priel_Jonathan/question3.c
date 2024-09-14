@@ -18,13 +18,13 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 {
 	int input;
 	//printf("**********************************************************************\n");
-	printf("These are the options for cell (%d,%d): ", x, y);
+	printf("These are several options for cell (%d,%d): ", x, y);
 	printArray(possibilities[x][y]->arr, possibilities[x][y]->size);
 	printf("\n");
 	printf("Enter one of the given options:");
 	//scanf("%d", &input);
 
-	// ***Generate a random index to select a legal value automatically: ONLY FOR INNER TESTING***
+	
 	
 	int index = randomInt(0, possibilities[x][y]->size - 1);
 	input = possibilities[x][y]->arr[index];  // Get the randomly selected option
@@ -40,13 +40,15 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 		printf("Enter one of the given options:");
 		scanf("%d", &input);
 	}
-
-	
     //since the input is fine we: fill it in the board, update the surrounding's cell possibilities ,free this cell possibilities struct
 	board[x][y] = input;
 	updatePossibilities(possibilities, x, y, board[x][y], board);
 	freePos(possibilities[x][y]);
 	possibilities[x][y] = NULL;
+
+	printf("This is how the board loos currently after filling cell (%d,%d) with the chosen value(%d):\n ", x, y, input); //printing for user's interface
+	printBoard(board);
+	printf("\n");
 }
 
 
@@ -105,7 +107,7 @@ int FillBoard(short board[][9], Array*** possibilities)
 			
 			boardValidity = checkBoardValidity(board); // Re-assess the board status after each input or auto-fill
 			if (!boardValidity){//if its not valid: we stop
-				printf("Failed - User's selections led to duplications\n");
+				//printf("Failed - User's selections led to duplications\n");
 				return FINISH_FAILURE;
 			}
 
@@ -117,9 +119,7 @@ int FillBoard(short board[][9], Array*** possibilities)
 				
 
 			finish_status = OneStage(board, possibilities, &x, &y);
-			//printf("\n");
-			//printBoard(board); // Assumes printBoard function is defined to print the board state
-			//printf("\n");
+			
 		}
 		
 		
