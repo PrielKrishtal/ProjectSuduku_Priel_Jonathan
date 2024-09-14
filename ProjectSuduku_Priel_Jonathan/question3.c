@@ -1,4 +1,4 @@
-#include "HeaderForEX1.h"
+#include "SudokuUtilities.h"
 #include "PlayersLst.h"
 #include "PlayersTree.h"
 
@@ -14,10 +14,14 @@ bool CheckOptionValidity(int input, Array* cellOptions)
 	return false; // Return false if no match is found
 }
 
+
+/**
+  funtion that lets the user select a valid input for a specified Sudoku cell and updates the board and possibilities accordingly.
+  the functin also Prints the updated board state after filling the cell.
+ */
 void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 {
 	int input;
-	//printf("**********************************************************************\n");
 	printf("These are several options for cell (%d,%d): ", x, y);
 	printArray(possibilities[x][y]->arr, possibilities[x][y]->size);
 	printf("\n");
@@ -27,8 +31,7 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 	
 	
 	int index = randomInt(0, possibilities[x][y]->size - 1);
-	input = possibilities[x][y]->arr[index];  // Get the randomly selected option
-	printf("Automatically selecting option %d for cell (%d,%d) for debugging.\n", input, x, y);
+	input = possibilities[x][y]->arr[index]; 
 	
 
 	while (!CheckOptionValidity(input, possibilities[x][y]))
@@ -40,18 +43,25 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 		printf("Enter one of the given options:");
 		scanf("%d", &input);
 	}
+
     //since the input is fine we: fill it in the board, update the surrounding's cell possibilities ,free this cell possibilities struct
 	board[x][y] = input;
 	updatePossibilities(possibilities, x, y, board[x][y], board);
 	freePos(possibilities[x][y]);
 	possibilities[x][y] = NULL;
 
-	printf("This is how the board loos currently after filling cell (%d,%d) with the chosen value(%d):\n ", x, y, input); //printing for user's interface
+	//printing for user's interface
+	printf("This is how the board loos currently after filling cell (%d,%d) with the chosen value(%d):\n ", x, y, input); 
 	printBoard(board);
 	printf("\n");
 }
 
 
+
+/*
+  FillBoard function continuously attempts to fill a Sudoku board using possibilities for each cell until the board is either fully solved, detected as unsolvable, or requires further input.
+  it returns FINISH_SUCCESS if the board is fully solved, FINISH_FAILURE if unsolvable, and NOT_FINISH if not yet fully solved but still valid.
+ */
 int FillBoard(short board[][9], Array*** possibilities)
 {
 	int x = -1, y = -1; //setting those values aas indicators to see if there has been a change
@@ -59,7 +69,7 @@ int FillBoard(short board[][9], Array*** possibilities)
 
 	if (!checkBoardValidity(board))// if its initailly wrong
 	{
-		//printf("FAILED");
+		
 		return FINISH_FAILURE;
 	}
 
@@ -67,11 +77,11 @@ int FillBoard(short board[][9], Array*** possibilities)
 	{
 		if(checkBoardValidity(board) == true)
 		{
-			//printf("FILLED\n");
+			
 			return finish_status;
 		}
 
-		//printf("FAILED");
+		
 		return FINISH_FAILURE;
 		
 	}
@@ -97,23 +107,17 @@ int FillBoard(short board[][9], Array*** possibilities)
 				possibilities[x][y] = NULL;
 			}
 			else {
-				
 				fillCellWithInput(board, possibilities, x, y);  // call a helper function to deal with the input of the user
 			}
 
-			
 
-			
-			
 			boardValidity = checkBoardValidity(board); // Re-assess the board status after each input or auto-fill
 			if (!boardValidity){//if its not valid: we stop
-				//printf("Failed - User's selections led to duplications\n");
 				return FINISH_FAILURE;
 			}
 
 			if (finish_status == FINISH_SUCCESS)
 			{
-				//printf("FILLED\n");
 				return FINISH_SUCCESS;
 			}
 				

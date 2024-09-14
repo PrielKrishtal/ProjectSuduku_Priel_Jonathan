@@ -1,6 +1,6 @@
 #pragma once
-#include "standard_includes.h"
-#include "HeaderforEX1.h"
+#include "StandardIncludes.h"
+#include "SudokuUtilities.h"
 
 
 // Struct to represent a player node in a binary search tree

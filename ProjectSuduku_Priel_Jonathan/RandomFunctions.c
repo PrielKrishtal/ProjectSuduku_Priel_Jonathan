@@ -1,4 +1,4 @@
-#include "functionsForMain.h"
+#include "GameSetup.h"
 
 
 // Function to fill a board with random values using ListOfCells

@@ -1,6 +1,6 @@
 #pragma once
-#include "HeaderforEX1.h"
-#include "standard_includes.h"
+#include "SudokuUtilities.h"
+#include "StandardIncludes.h"
 
 // Struct to represent a player
 typedef struct Player {

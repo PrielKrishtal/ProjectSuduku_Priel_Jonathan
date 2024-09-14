@@ -1,5 +1,5 @@
 #pragma once
-#include "standard_includes.h"
+#include "StandardIncludes.h"
 
 
 // Struct to represent a position on the board

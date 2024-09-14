@@ -1,7 +1,7 @@
-#include "HeaderForEX1.h"
+#include "SudokuUtilities.h"
 #include "PlayersLst.h"
 #include "PlayersTree.h"
-#include "functionsForMain.h"
+#include "GameSetup.h"
 #include "Player.h"
 
 

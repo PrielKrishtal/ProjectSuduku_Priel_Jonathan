@@ -128,24 +128,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BoardCells.h" />
-    <ClInclude Include="functionsForMain.h" />
-    <ClInclude Include="HeaderforEX1.h" />
+    <ClInclude Include="GameSetup.h" />
+    <ClInclude Include="SudokuUtilities.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayersLst.h" />
     <ClInclude Include="PlayersTree.h" />
-    <ClInclude Include="standard_includes.h" />
+    <ClInclude Include="StandardIncludes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BoardCellsFunctions.c" />
-    <ClCompile Include="DebugMain.c" />
     <ClCompile Include="Main.c" />
-    <ClCompile Include="MainForEx1.c" />
-    <ClCompile Include="objectsFunctions.c" />
-    <ClCompile Include="PlayersLst_Implementation.c" />
-    <ClCompile Include="PlayerStruct_Functions.c" />
-    <ClCompile Include="question1.c" />
-    <ClCompile Include="question2.c" />
-    <ClCompile Include="question3.c" />
+    <ClCompile Include="GameSetupFunctions.c" />
+    <ClCompile Include="PlayersLstFunctions.c" />
+    <ClCompile Include="PlayerStructFunctions.c" />
+    <ClCompile Include="Question1.c" />
+    <ClCompile Include="Question2.c" />
+    <ClCompile Include="Question3.c" />
     <ClCompile Include="RandomFunctions.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

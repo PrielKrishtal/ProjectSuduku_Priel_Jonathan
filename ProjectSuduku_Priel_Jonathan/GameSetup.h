@@ -1,9 +1,8 @@
 #pragma once
-#include "standard_includes.h"
-#include "HeaderforEX1.h"
+#include "StandardIncludes.h"
+#include "SudokuUtilities.h"
 #include "PlayersLst.h"
 #include "PlayersTree.h"
-#include "functionsForMain.h"
 #include "Player.h"
 #include "BoardCells.h"
 

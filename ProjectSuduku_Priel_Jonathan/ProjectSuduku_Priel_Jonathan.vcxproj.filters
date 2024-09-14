@@ -15,31 +15,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="question1.c">
+    <ClCompile Include="Question1.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MainForEx1.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugMain.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="question2.c">
+    <ClCompile Include="Question2.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="question3.c">
+    <ClCompile Include="Question3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="objectsFunctions.c">
+    <ClCompile Include="GameSetupFunctions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayersLst_Implementation.c">
+    <ClCompile Include="PlayersLstFunctions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerStruct_Functions.c">
+    <ClCompile Include="PlayerStructFunctions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BoardCellsFunctions.c">
@@ -50,7 +44,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HeaderforEX1.h">
+    <ClInclude Include="SudokuUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PlayersLst.h">
@@ -59,7 +53,7 @@
     <ClInclude Include="PlayersTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="functionsForMain.h">
+    <ClInclude Include="GameSetup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -68,7 +62,7 @@
     <ClInclude Include="BoardCells.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="standard_includes.h">
+    <ClInclude Include="StandardIncludes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

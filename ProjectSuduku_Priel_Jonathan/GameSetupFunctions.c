@@ -1,6 +1,6 @@
-﻿#include "functionsForMain.h"
+﻿#include "GameSetup.h"
 
-
+//Function that initalizes the board cells to -1 (aka empty cell)
 void initializeBoard(short board[SIZE][SIZE]) 
 {
     for (int i = 0; i < SIZE; i++) {
@@ -11,7 +11,7 @@ void initializeBoard(short board[SIZE][SIZE])
 }
 
 
-// Function to create a player
+// Function to create a Player(getting his name,generating Board, possibilities board etc)
 Player* createPlayer()
 {
     char buffer[MAX_NAME_LENGTH]; //insure the name is 100 char len max
@@ -34,13 +34,12 @@ Player* createPlayer()
     return newPlayer;
 }
 
-
+// Function that gets the number of active players
 void getNumActivePlayers(int* x)
 {
     int input;
     printf("Pls enter number of active players:");
     scanf("%d", &input);
-    //todo: add validity number check on input
 
     *x = input;
 }
@@ -62,7 +61,7 @@ void printCellsList(ListOfCells* lst, int board[SIZE][SIZE])
 }
 
 
-//Funcion that creates a PlayersList and Fills it in using given info from the user
+//Funcion that creates the active players list (PlayersList type) and Fills it using given info from the user
 void create_And_Fill_ActivePlayersList(PlayersList* lst, int numPlayers)
 {
     makeEmptyPlayersList(lst); // Initialize the list to be empty
@@ -70,14 +69,14 @@ void create_And_Fill_ActivePlayersList(PlayersList* lst, int numPlayers)
 
     for (int i = 0; i < numPlayers; i++) {
         
-         newPlayer = createPlayer(); // Create a new player with the given name
+         newPlayer = createPlayer(); // Create a new player
 
-        insertPlayerToEndList(lst, newPlayer); // Insert the player at the end of the list as a PlayerNode
+        insertPlayerToEndList(lst, newPlayer); // Insert the player at the end of the list as a PlayerNode(Parallel to InsertDataToEndOfLst)
     }
    
 }
 
-// Function to count filled cells in a Sudoku board
+// Function that counts filled cells in a Sudoku board
 int CountFilledCells(short(*board)[SIZE])
 {
     int unfilledCount = 0; // Counter for unfilled cells
@@ -98,7 +97,7 @@ int CountFilledCells(short(*board)[SIZE])
 
 
 
-// Function to create and sort an array of player pointers from a linked list of players
+// Function that creates and sort an array of Player pointers from a linked list of players
 Player** createAndSortPlayerArray(PlayersList* list,int size) 
 {
     // Allocate an array of player pointers of the right size

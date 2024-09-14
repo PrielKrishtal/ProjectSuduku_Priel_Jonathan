@@ -1,4 +1,4 @@
-#include "HeaderForEX1.h"
+#include "SudokuUtilities.h"
 
 // Function to print the Sudoku board
 void printBoard(short sudokuBoard[][SIZE]) {
@@ -95,31 +95,22 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
     {
         for (int j = 0; j < SIZE; j++)
         {
-            //printf("\n");
             if (sudokuBoard[i][j] == -1)
             {
                 bool numPresent[9] = { false }; //initalize a boolean array in order to mark values that arent available
 
                 // Get row values and update numPresent
                 checkRowVal(sudokuBoard, i, temp);
-                //****************************** NEEDS TO BE REMOVED ***************************
-                //printf("Checking cell (%d, %d):\n", i, j);
-                //printf("__________________________\n");
-                //printf("Row values: ");
-                //printArray(temp, SIZE);
                 markNumbers(numPresent, temp, SIZE);
 
                 // Get column values and update numPresent
                 checkColVal(sudokuBoard, j, temp);
-                //printf("Column values: ");
-                //printArray(temp, SIZE);
                 markNumbers(numPresent, temp, SIZE);
 
 
                 // Get cube values and update numPresent
                 checkCubeVal(sudokuBoard, i, j, temp);
-                //printf("Cube values: ");
-                //printArray(temp, SIZE);
+
                 markNumbers(numPresent, temp, 9);
  
 
@@ -128,8 +119,6 @@ Array*** PossibleDigits(short sudokuBoard[][SIZE])
                 int missingCount;
                 findMissingNumbers(numPresent, &missingNumbers, &missingCount);
 
-                //printf("Possible digits for cell (%d, %d): ", i, j);
-                //printArray(missingNumbers, missingCount);
                 
 
                 allPossibleVal[i][j] = (Array*)malloc(sizeof(Array));

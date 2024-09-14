@@ -1,20 +1,21 @@
 #pragma once
-#include "standard_includes.h"
+#include "StandardIncludes.h"
 
 #define SIZE 9
 #define MAX_NAME_LENGTH 100
+
 ///Macro for getting cube number  (1+ to match the cube numbers)
 #define CalWhichCube(row, col) (3 * (row / 3) + (col / 3) ) 
 
-#define ROW_OFFSET(cubeNum) ((CubeNum / 3) * 3)
-#define COL_OFFSET(cubeNum) ((CubeNum % 3) * 3)
+#define ROW_OFFSET(cubeNum) ((cubeNum / 3) * 3)
+#define COL_OFFSET(cubeNum) ((cubeNum % 3) * 3)
 
-//Board status indices:
+//Board result status:
 #define NOT_FINISH 0
 #define FINISH_SUCCESS 1
 #define FINISH_FAILURE -1
 
-#define FILE_NAME "winnersList.txt"
+#define FILE_NAME "winnersList.txt" //Name for the generated file of winners
 
 /// Macro for checking allocations
 #define CHECK_ALLOCATION(ptr) \
