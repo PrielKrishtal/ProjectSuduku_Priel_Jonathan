@@ -51,7 +51,8 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 	possibilities[x][y] = NULL;
 
 	//printing for user's interface
-	printf("This is how the board loos currently after filling cell (%d,%d) with the chosen value(%d):\n ", x, y, input); 
+	printf("\n");
+	printf("This is how the board looks currently after filling cell (%d,%d) with the chosen value(%d):\n ", x, y, input); 
 	printBoard(board);
 	printf("\n");
 }

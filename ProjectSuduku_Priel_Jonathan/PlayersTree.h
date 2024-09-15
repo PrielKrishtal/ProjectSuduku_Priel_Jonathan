@@ -3,15 +3,14 @@
 #include "SudokuUtilities.h"
 
 
-// Struct to represent a player node in a binary search tree
 typedef struct PlayerTreeNode {
-    Player* player;
+    PlayerNode** playerNodePtr;  // Pointer to a cell in the sorted array
     struct PlayerTreeNode* left;
     struct PlayerTreeNode* right;
 } PlayerTreeNode;
 
 
-//push chrck
+
 typedef struct PlayersTree {
     PlayerTreeNode* root;
 }PlayersTree;
@@ -20,5 +19,6 @@ typedef struct PlayersTree {
 
 //Functions declerations:
 
-PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player);
+PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, PlayerNode** playerNodePtr);
 void freePlayerTree(PlayerTreeNode* root);
+PlayerTreeNode* buildTreeFromArray(PlayerNode** array, int start, int end);

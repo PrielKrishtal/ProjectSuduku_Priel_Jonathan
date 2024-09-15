@@ -98,52 +98,56 @@ int CountFilledCells(short(*board)[SIZE])
 
 
 // Function that creates and sort an array of Player pointers from a linked list of players
-Player** createAndSortPlayerArray(PlayersList* list,int size) 
+PlayerNode** createAndSortPlayerArray(PlayersList* list,int size)
+
 {
-    // Allocate an array of player pointers of the right size
-    Player** playerPointerArray = (Player**)malloc(size * sizeof(Player*));
-    CHECK_ALLOCATION(playerPointerArray);  // Use the macro to check allocation and handle any failure
+    // Allocate an array of player node pointers of the right size
+    PlayerNode** playerNodePointerArray = (PlayerNode**)malloc(size * sizeof(PlayerNode*));
+    CHECK_ALLOCATION(playerNodePointerArray);  // Use the macro to check allocation and handle any failure
+
 
     // Fill the array with pointers to the players
     PlayerNode* current = list->head;  // set current pointer to the head of the list
     for (int index = 0; index < size && current != NULL; index++) {
-        playerPointerArray[index] = current->player;  // Assign the player pointer to the array
+        playerNodePointerArray[index] = current; // Assign the player node pointer to the array
         current = current->next;  // Move to the next node
     }
 
     // Now sort the array using the modified bubble sort function
-    bubbleSort(playerPointerArray, size);  // Sort the array based on the sorting criteria defined in bubbleSort
+    bubbleSort(playerNodePointerArray, size);  // Sort the array based on the sorting criteria defined in bubbleSort
 
 
 
-    return playerPointerArray;  // Return the sorted array of player pointers
+    return playerNodePointerArray;  // Return the sorted array of player pointers
 }
 
 
-// Function that sorts an array of Player pointers based on filled cells and names
-void bubbleSort(Player** players, int count) 
+// Function that sorts an array of PlayerNode pointers based on filled cells and names
+void bubbleSort(PlayerNode** playerNodes, int count)
+
 {
-    // Outer loop: iterate through each player in the array except the last one
+    // Outer loop: iterate through each player node in the array except the last one
     for (int i = 0; i < count - 1; i++) {
-        // Inner loop: go through the players up to the part of the array that's still unsorted
+        // Inner loop: go through the player nodes up to the part of the array that's still unsorted
         for (int j = 0; j < count - i - 1; j++) {
 
-            int filledCellsCurrent = CountFilledCells(players[j]->board);
-            int filledCellsNext = CountFilledCells(players[j + 1]->board);
+            int filledCellsCurrent = CountFilledCells(playerNodes[j]->player->board); // Get filled cells count for the current player
+            int filledCellsNext = CountFilledCells(playerNodes[j + 1]->player->board); // Get filled cells count for the next player
 
-            // Check if the current player should swap places with the next one based on filled cells
+            // Check if the current player node should swap places with the next one based on filled cells
             if (filledCellsCurrent < filledCellsNext) {
-                // Swap the current player with the next one
-                Player* temp = players[j];
-                players[j] = players[j + 1];
-                players[j + 1] = temp;
+                // Swap the current player node with the next one
+                PlayerNode* temp = playerNodes[j];
+                playerNodes[j] = playerNodes[j + 1];
+                playerNodes[j + 1] = temp;
             }
+
             // If the filled cell count is the same, then compare names
-            else if (filledCellsCurrent == filledCellsNext && strcmp(players[j]->name, players[j + 1]->name) > 0) {
-                // Swap the current player with the next one based on name comparison
-                Player* temp = players[j];
-                players[j] = players[j + 1];
-                players[j + 1] = temp;
+            else if (filledCellsCurrent == filledCellsNext && strcmp(playerNodes[j]->player->name, playerNodes[j + 1]->player->name) > 0) {
+                // Swap the current player node with the next one based on name comparison
+                PlayerNode* temp = playerNodes[j];
+                playerNodes[j] = playerNodes[j + 1];
+                playerNodes[j + 1] = temp;
             }
         }
     }
@@ -151,49 +155,48 @@ void bubbleSort(Player** players, int count)
 
 
 
+// Helper function to resize the array of PlayerNode pointers
+PlayerNode** resizeArray(PlayerNode** playerNodes, int* currentSize)
 
-// Helper function to resize the array of pointers
-Player** resizeArray(Player** players, int* currentSize)
 {
-    int newSize = CALCULATE_NEW_SIZE(*currentSize); // Calculate new size using the formula defined as a  macro
+    int newSize = CALCULATE_NEW_SIZE(*currentSize); // Calculate new size using the formula defined as a macro
 
     // Reallocate the existing array to the new size
-    Player** newPlayers = (Player**)realloc(players, newSize * sizeof(Player*));
-    CHECK_ALLOCATION(newPlayers); // Check if memory allocation is successful
+    PlayerNode** newPlayerNodes = (PlayerNode**)realloc(playerNodes, newSize * sizeof(PlayerNode*));
+    CHECK_ALLOCATION(newPlayerNodes); // Check if memory allocation is successful
 
     // Initialize any new cells to NULL
     for (int i = *currentSize; i < newSize; i++) {
-        newPlayers[i] = NULL;
+        newPlayerNodes[i] = NULL;
     }
 
     *currentSize = newSize; // Update the current size to the new size
-    return newPlayers; // Return the reallocated array
+    return newPlayerNodes; // Return the reallocated array
 }
 
 
 
-
-
-
-// Function to insert a player into a binary search tree
-PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player) {
+// Function to insert a player node pointer (pointing to a cell in the array) into a binary search tree
+PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, PlayerNode** playerNodePtr) {
     if (root == NULL) {
+        // Create a new tree node
         PlayerTreeNode* newNode = (PlayerTreeNode*)malloc(sizeof(PlayerTreeNode));
-        if (!newNode) {
-            fprintf(stderr, "Memory allocation failed\n");
-            exit(1);
-        }
-        newNode->player = player;
+        CHECK_ALLOCATION(newNode); // Use macro to check memory allocation
+
+        newNode->playerNodePtr = playerNodePtr;  // Store the pointer to the cell in the array
         newNode->left = NULL;
         newNode->right = NULL;
         return newNode;
     }
-    if (strcmp(player->name, root->player->name) < 0) {
-        root->left = insertPlayerTree(root->left, player);
+
+    // Compare based on the player's name pointed to by playerNodePtr
+    if (strcmp((*playerNodePtr)->player->name, (*root->playerNodePtr)->player->name) < 0) {
+        root->left = insertPlayerTree(root->left, playerNodePtr); // Insert in the left subtree
     }
     else {
-        root->right = insertPlayerTree(root->right, player);
+        root->right = insertPlayerTree(root->right, playerNodePtr); // Insert in the right subtree
     }
+
     return root;
 }
 
@@ -204,9 +207,11 @@ PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player) {
 void freePlayerTree(PlayerTreeNode* root)
 {
     if (root != NULL) {
-        freePlayerTree(root->left);
-        freePlayerTree(root->right);
-        free(root);
+        freePlayerTree(root->left);   // Recursively free the left subtree
+        freePlayerTree(root->right);  // Recursively free the right subtree
+        
+        free(root);  // Free the current tree node
+
     }
 }
 
@@ -215,22 +220,30 @@ void freePlayerTree(PlayerTreeNode* root)
 
 
 
-//Code for build tree from array 
-PlayerTreeNode* buildTreeFromArray(Player* array[], int start, int end) {
-    if (start > end) return NULL;
+// Code for building a binary tree from a sorted array of PlayerNode pointers
+PlayerTreeNode* buildTreeFromArray(PlayerNode** array, int start, int end)
+{
+    if (start > end) return NULL;  // Base case: no elements to include in the tree
 
-    int mid = start + (end - start) / 2;
+    int mid = start + (end - start) / 2;  // Calculate middle index
 
+    // Allocate memory for a new tree node
     PlayerTreeNode* node = (PlayerTreeNode*)malloc(sizeof(PlayerTreeNode));
-    CHECK_ALLOCATION(node);
+    CHECK_ALLOCATION(node);  // Check if memory allocation was successful
 
-    // Copy the Player struct from the array to the tree node
-    node->player = (array[mid]);  // Use dereferencing to copy the player struct
+    // Assign the middle element of the array to the tree node
+    node->playerNodePtr = &array[mid];  // Assign the pointer to the PlayerNode
 
+    // Recursively build the left subtree
     node->left = buildTreeFromArray(array, start, mid - 1);
+
+    // Recursively build the right subtree
     node->right = buildTreeFromArray(array, mid + 1, end);
-    return node;
+
+    return node;  // Return the newly created tree node
 }
+
+
 
 // Function to perform in-order traversal and process each player
 void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers)
@@ -242,41 +255,37 @@ void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersLis
     inOrderProcess(root->left, activePlayers, winnerPlayers);
 
     // Process current player
-    if (root->player != NULL)
+    if (root->playerNodePtr != NULL && *root->playerNodePtr != NULL && (*root->playerNodePtr)->player != NULL)  // Check if node, playerNode, and player are not NULL
     {
+        Player* currentPlayer = (*root->playerNodePtr)->player;  // Access the player from the PlayerNode pointer stored in the tree node
         printf("\n");
-        printf("Currently Playing: %s\n", root->player->name);
+        printf("Currently Playing: %s\n", currentPlayer->name);
         printf("_____________________________________\n\n");
-        printf("%s's Initial Board:\n\n", root->player->name); //printing for user's interface
-        printBoard(root->player->board);
+        printf("%s's Initial Board:\n\n", currentPlayer->name); // Printing for user's interface
+        printBoard(currentPlayer->board);
         printf("\n");
 
-        
-        int status = FillBoard(root->player->board, root->player->possibleDigits); // Use FillBoard to process the player's board
+        int status = FillBoard(currentPlayer->board, currentPlayer->possibleDigits); // Use FillBoard to process the player's board
 
         if (status == FINISH_FAILURE) {
-            printf("%s's result: finished with failure and is out of the game.\n\n", root->player->name);
-            removePlayerFromList(activePlayers, root->player); // Remove player from active list
-            root->player = NULL;
+            printf("%s's result: finished with failure and is out of the game.\n\n", currentPlayer->name);
+            removePlayerFromList(activePlayers, currentPlayer); // Remove player from active list
+            (*root->playerNodePtr)->player = NULL;  // Nullify the player pointer in the PlayerNode
         }
         else if (status == FINISH_SUCCESS) {
-            printf("%s's result:finished successfully and is moved to the winner's list.\n\n", root->player->name);
-            insertPlayerToEndList(winnerPlayers, root->player); // Move player to winners list
-            root->player = NULL;
+            printf("%s's result: finished successfully and is moved to the winner's list.\n\n", currentPlayer->name);
+            insertPlayerToEndList(winnerPlayers, currentPlayer); // Move player to winners list
+            (*root->playerNodePtr)->player = NULL;  // Nullify the player pointer in the PlayerNode
         }
         else if (status == NOT_FINISH) {
             // This branch might be redundant depending on how FillBoard handles NOT_FINISH statuses
-            printf("%s's result: has not finished yet and may need further actions.\n\n", root->player->name);
+            printf("%s's result: has not finished yet and may need further actions.\n\n", currentPlayer->name);
         }
-
-        
-        
     }
 
     // Traverse right subtree
     inOrderProcess(root->right, activePlayers, winnerPlayers);
 }
-
 
 
 
@@ -294,7 +303,7 @@ void printBoardToFile(FILE* file, short board[SIZE][SIZE])
     for (int col = 0; col < SIZE; col++) {
         fprintf(file, "%d ", col);  // Print the column headers
         if ((col + 1) % 3 == 0 && col < SIZE - 1) {
-            fprintf(file, "| ");  // Print vertical separators for columns
+            fprintf(file, " | ");  // Print vertical separators for columns
         }
     }
     fprintf(file, "\n");

@@ -26,7 +26,7 @@ void main() {
     printf("\n");
    
     
-    Player** playerPointersArray = createAndSortPlayerArray(&activePlayerList, activePlayersCount);// cearting and sorting the array of pointers to Player's nodes
+    PlayerNode** playerPointersArray = createAndSortPlayerArray(&activePlayerList, activePlayersCount);// cearting and sorting the array of pointers to Player's nodes
 
     
     playerPointersArray = resizeArray(playerPointersArray, &activePlayersCount);// Resize the player array and also update activePlayersCount value
@@ -59,5 +59,8 @@ void main() {
     freePlayersList(&winnerList);
     freePlayerArray(playerPointersArray, activePlayersCount);
     freePlayerTree(tree_Of_Players.root);
+
+
+ 
 
 }

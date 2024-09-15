@@ -13,21 +13,18 @@
 
 //functions declerations: 
 Player* createPlayer();
-void bubbleSort(Player** players, int count);
 void getNumActivePlayers(int* x);
 void create_And_Fill_ActivePlayersList(PlayersList* lst, int numPlayers);
-Player** createAndSortPlayerArray(PlayersList* list, int size);
+PlayerNode** createAndSortPlayerArray(PlayersList* list, int size);
+void bubbleSort(PlayerNode** playerNodes, int count);
+PlayerNode** resizeArray(PlayerNode** playerNodes, int* currentSize);
 int calculateNewSize(int currentSize);
-Player** resizeArray(Player** players, int* currentSize);
-PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, Player* player);
-void freePlayerTree(PlayerTreeNode* root);
-void inOrderTraversal(PlayerTreeNode* root, void (*func)(Player*));
-PlayerTreeNode* buildTreeFromArray(Player* array[], int start, int end);
-void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers);
+PlayerNode** resizeArray(PlayerNode** playerNodes, int* currentSize);
 void printBoardToFile(FILE* file, int board[SIZE][SIZE]);
 void printWinnersToFile(PlayerNode* winnerList);
 void printSudoku(int board[SIZE][SIZE]);
 void freePlayerArray(Player** array, int size);
+void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers);
 
 // Function to count the number of players in a linked list
 int countPlayersInList(PlayersList* winnerList);
