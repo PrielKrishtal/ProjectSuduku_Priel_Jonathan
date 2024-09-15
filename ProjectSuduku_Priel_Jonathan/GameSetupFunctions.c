@@ -362,20 +362,29 @@ void printWinnersToFile(PlayersList* winnerList) {
 
 
 
-void freePlayerArray(Player** array, int size) {
-    if (array == NULL) return; // Safety check
 
-    // Loop through each Player* in the array and free the Player
+// Function to free an array of PlayerNode pointers
+void freePlayerNodeArray(PlayerNode** playerPointersArray, int size)
+{
+    if (playerPointersArray == NULL) return; // Safety check
+
+    // Loop through each PlayerNode* in the array and free the PlayerNode and the Player
     for (int i = 0; i < size; i++) {
-        if (array[i] != NULL) {
-            freePlayer(array[i]); // Free each individual Player
-            array[i] = NULL; // Set the pointer to NULL after freeing
+        if (playerPointersArray[i] != NULL) {
+            if (playerPointersArray[i]->player != NULL) {
+                free(playerPointersArray[i]->player); // Free the Player struct inside the PlayerNode
+                playerPointersArray[i]->player = NULL; // Set the pointer to NULL after freeing
+            }
+             
+            playerPointersArray[i] = NULL; // Set the pointer to NULL after freeing
         }
     }
 
-    // After all Player objects are freed, free the array itself
-    free(array);
+    // After all PlayerNode objects are freed, free the array itself
+    free(playerPointersArray);
 }
+
+
 
 
 // Function to count the number of players in a linked list

@@ -19,7 +19,7 @@ bool CheckOptionValidity(int input, Array* cellOptions)
   funtion that lets the user select a valid input for a specified Sudoku cell and updates the board and possibilities accordingly.
   the functin also Prints the updated board state after filling the cell.
  */
-void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
+void fillCellWithInput(short board[][9], Array*** possibilities, int x, int y)
 {
 	int input;
 	printf("These are several options for cell (%d,%d): ", x, y);
@@ -28,18 +28,17 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 	printf("Enter one of the given options:");
 	scanf("%d", &input);
 
-
 	while (!CheckOptionValidity(input, possibilities[x][y]))
 	{
 		printf("Error: %d is not a valid option. Try again: ", input);
-		printf("These are the options for cell (%d,%d): ",x, y);
+		printf("These are the options for cell (%d,%d): ", x, y);
 		printArray(possibilities[x][y]->arr, possibilities[x][y]->size);
 		printf("\n");
 		printf("Enter one of the given options:");
 		scanf("%d", &input);
 	}
 
-    //since the input is fine we: fill it in the board, update the surrounding's cell possibilities ,free this cell possibilities struct
+	//since the input is fine we: fill it in the board, update the surrounding's cell possibilities ,free this cell possibilities struct
 	board[x][y] = input;
 	updatePossibilities(possibilities, x, y, board[x][y], board);
 	freePos(possibilities[x][y]);
@@ -47,7 +46,7 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 
 	//printing for user's interface
 	printf("\n");
-	printf("This is how the board looks currently after filling cell (%d,%d) with the chosen value(%d):\n ", x, y, input); 
+	printf("This is how the board looks currently after filling cell (%d,%d) with the chosen value(%d):\n ", x, y, input);
 	printBoard(board);
 	printf("\n");
 }

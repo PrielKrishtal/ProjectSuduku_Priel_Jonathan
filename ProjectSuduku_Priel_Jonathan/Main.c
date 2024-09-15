@@ -55,12 +55,8 @@ void main() {
 
 
     // Free allocated memory
+    freePlayerNodeArray(playerPointersArray, activePlayersCount);
     freePlayersList(&activePlayerList);
     freePlayersList(&winnerList);
-    freePlayerArray(playerPointersArray, activePlayersCount);
     freePlayerTree(tree_Of_Players.root);
-
-
- 
-
 }

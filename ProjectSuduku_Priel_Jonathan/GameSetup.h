@@ -25,7 +25,7 @@ void printWinnersToFile(PlayerNode* winnerList);
 void printSudoku(int board[SIZE][SIZE]);
 void freePlayerArray(Player** array, int size);
 void inOrderProcess(PlayerTreeNode* root, PlayersList* activePlayers, PlayersList* winnerPlayers);
-
+void freePlayerNodeArray(PlayerNode** playerPointersArray, int size);
 // Function to count the number of players in a linked list
 int countPlayersInList(PlayersList* winnerList);
 
