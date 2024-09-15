@@ -26,13 +26,8 @@ void fillCellWithInput(short board[][9],Array*** possibilities, int x, int y)
 	printArray(possibilities[x][y]->arr, possibilities[x][y]->size);
 	printf("\n");
 	printf("Enter one of the given options:");
-	//scanf("%d", &input);
+	scanf("%d", &input);
 
-	
-	
-	int index = randomInt(0, possibilities[x][y]->size - 1);
-	input = possibilities[x][y]->arr[index]; 
-	
 
 	while (!CheckOptionValidity(input, possibilities[x][y]))
 	{

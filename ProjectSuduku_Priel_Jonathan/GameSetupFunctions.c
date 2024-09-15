@@ -97,9 +97,8 @@ int CountFilledCells(short(*board)[SIZE])
 
 
 
-// Function that creates and sort an array of Player pointers from a linked list of players
+// Function that creates and sort an array of PlayerNode pointers 
 PlayerNode** createAndSortPlayerArray(PlayersList* list,int size)
-
 {
     // Allocate an array of player node pointers of the right size
     PlayerNode** playerNodePointerArray = (PlayerNode**)malloc(size * sizeof(PlayerNode*));
@@ -203,7 +202,7 @@ PlayerTreeNode* insertPlayerTree(PlayerTreeNode* root, PlayerNode** playerNodePt
 
 
 
-// Function to free the entire binary search tree of players
+// Function to free the entire binary tree
 void freePlayerTree(PlayerTreeNode* root)
 {
     if (root != NULL) {
